@@ -36,7 +36,7 @@ function MainNavigation() {
           <span />
         </button>
         <h1 className={classes["main-navigation__title"]}>
-          <Link to="/"> Your places </Link>
+          <Link to="/">Places</Link>
         </h1>
         <nav className={classes["main-navigation__header-nav"]}>
           <Navlinks />

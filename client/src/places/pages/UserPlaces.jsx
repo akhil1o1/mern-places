@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 
 import PlaceList from "../components/PlaceList";
 
@@ -30,7 +31,12 @@ const PlACES = [
 ];
 
 function UserPlaces() {
-    return <PlaceList items={PlACES}/>
+
+    const {userId}  = useParams();
+    console.log(userId);
+    const placesLoadedByUser = PlACES.filter((place) => place.creator=== userId);
+
+    return <PlaceList items={placesLoadedByUser}/>
 }
 
 export default UserPlaces;
