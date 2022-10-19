@@ -1,11 +1,25 @@
 import React from "react";
 
-import classes from "./Map.module.css";
 
 function Map(props) {
-    return <div className={`${classes.map} ${props.className}`} style={props.style}>
-
-    </div>
+  return (
+    <iframe
+      title="map"
+      width="100%"
+      height="100%"
+      frameBorder="0"
+      scrolling="no"
+      marginHeight="0"
+      marginWidth="0"
+      src={
+        "https://maps.google.com/maps?q=" +
+        props.coordinates.lat.toString() +
+        "," +
+        props.coordinates.lng.toString() +
+        "&t=&z=15&ie=UTF8&iwloc=&output=embed"
+      }
+    ></iframe>
+  );
 }
 
 export default Map;
