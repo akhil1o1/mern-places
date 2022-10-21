@@ -13,10 +13,9 @@ const formReducer = (state, action) => {
       if (inputId === action.inputId) {
         formIsValid = formIsValid && action.isValid;
       } else {
-        formIsValid = formIsValid && state.isValid;
+        formIsValid = formIsValid && state.inputs[inputId].isValid;
       }
     }
-  } else {
     return {
       ...state,
       inputs: {
@@ -25,6 +24,8 @@ const formReducer = (state, action) => {
       },
       isValid: formIsValid,
     };
+  } else {
+    return state;
   }
 }
 
@@ -36,6 +37,10 @@ function NewPlace() {
         isValid: false,
       },
       description: {
+        value: "",
+        isValid: false,
+      },
+      address: {
         value: "",
         isValid: false,
       },
@@ -52,16 +57,31 @@ function NewPlace() {
     });
   }, []);
 
+
+  function placeSubmitHandler(event) {
+    event.preventDefault();
+    console.log(formState.inputs);
+  }
+
   return (
-    <form className={classes["place-form"]}>
+    <form className={classes["place-form"]} onSubmit={placeSubmitHandler}>
       <Input
         id="title"
         element="input"
-        type="input"
+        type="text"
         label="title"
         onInput={inputHandler}
         validators={[VALIDATOR_REQUIRE()]}
         errorText="Please enter a valid title."
+      />
+      <Input
+        id="address"
+        element="input"
+        type="text"
+        label="address"
+        onInput={inputHandler}
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText="Please enter a valid address."
       />
       <Input
         id="description"
@@ -71,7 +91,7 @@ function NewPlace() {
         validators={[VALIDATOR_MINLENGTH(5)]}
         errorText="Please enter a valid description (atleast 5 characters)."
       />
-      <Button type="submit" disabled={!formState.isValid} />
+      <Button type="submit" disabled={!formState.isValid} >ADD PLACE</Button>
     </form>
   );
 }

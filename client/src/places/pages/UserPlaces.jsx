@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import PlaceList from "../components/PlaceList";
 
-const PlACES = [
+const PLACES = [
     {
         id:"p1",
         imageUrl:"https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
@@ -34,7 +34,7 @@ function UserPlaces() {
 
     const {userId}  = useParams();
     console.log(userId);
-    const placesLoadedByUser = PlACES.filter((place) => place.creator=== userId);
+    const placesLoadedByUser = PLACES.filter((place) => place.creator=== userId);
 
     return <PlaceList items={placesLoadedByUser}/>
 }

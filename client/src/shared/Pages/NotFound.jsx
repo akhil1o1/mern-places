@@ -5,7 +5,7 @@ import Card from "../components/UIElements/Card";
 
 function NotFound() {
     return <Card>
-        <div>
+        <div className="center">
             <h1>
                 404!!!!
             </h1>

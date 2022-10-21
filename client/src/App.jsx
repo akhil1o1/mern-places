@@ -6,6 +6,7 @@ import UserPlaces from "./places/pages/UserPlaces";
 import NewPlace from "./places/pages/NewPlace";
 import MainNavigation from "./shared/components/navigation/MainNavigation";
 import NotFound from "./shared/Pages/NotFound";
+import UpdatePlace from "./places/pages/UpdatePlace";
 import './App.css';
 
 
@@ -17,6 +18,7 @@ function App() {
       <Route path="/" element={<Users/>}/>
       <Route path="/places/new" element={<NewPlace/>}/>
       <Route path="/:userId/places" element={<UserPlaces/>} />
+      <Route path="/places/:placeId" element={<UpdatePlace/>}/>
       <Route path="*" element={<NotFound/>} />
     </Routes>
     </main>
