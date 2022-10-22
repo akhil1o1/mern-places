@@ -42,6 +42,10 @@
   .place-item__modal-actions {
     text-align: right;
   }
+
+  .place-item__modal-header{
+    text-align: center;
+  }
   
   .place-item__actions button,
   .place-item__actions a {

@@ -2,10 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import Card from "../components/UIElements/Card";
+import classes from "./NotFound.module.css";
 
 function NotFound() {
-    return <Card>
-        <div className="center">
+    return <Card className={classes["not-found__card"]}>
+        <div>
             <h1>
                 404!!!!
             </h1>

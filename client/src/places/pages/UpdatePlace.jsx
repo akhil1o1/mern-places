@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
-import { VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from "../../shared/utils/validators";
+import Card from "../../shared/components/UIElements/Card";
+import {
+  VALIDATOR_MINLENGTH,
+  VALIDATOR_REQUIRE,
+} from "../../shared/utils/validators";
+import { useForm } from "../../shared/hooks/form-hook";
 import classes from "./UpdatePlace.module.css";
-
 
 const PLACES = [
   {
     id: "p1",
     imageUrl:
       "https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-    title: "Empire State building",
+    title: "Empire State building p1",
     description: "famous sky scraper",
     address: "20 W 34th St., New York, NY 10001, United States",
     creator: "u1",
@@ -25,7 +29,7 @@ const PLACES = [
     id: "p2",
     imageUrl:
       "https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-    title: "Empire State building",
+    title: "Empire State building p2",
     description: "famous sky scraper",
     address: "20 W 34th St., New York, NY 10001, United States",
     creator: "u2",
@@ -37,46 +41,99 @@ const PLACES = [
 ];
 
 function UpdatePlace() {
+  const [isLoading, setIsLoading] = useState(true);
   const { placeId } = useParams();
+  console.log(placeId);
 
-  const placeBeingEdited = PLACES.filter((place) => place.id === placeId);
+  const [formState, inputHandler, setFormData] = useForm(
+    {
+      title: {
+        value: "",
+        isValid: false,
+      },
+      description: {
+        value: "",
+        isValid: false,
+      },
+    },
+    false
+  );
+
+  const placeBeingEdited = PLACES.find((place) => place.id === placeId);
+
+  useEffect(() => {
+    if (placeBeingEdited) {
+      setFormData(
+        {
+          title: {
+            value: placeBeingEdited.title,
+            isValid: true,
+          },
+          description: {
+            value: placeBeingEdited.description,
+            isValid: true,
+          },
+        },
+        true
+      );
+    }
+    setIsLoading(false);
+  }, [setFormData, placeBeingEdited]);
 
   console.log(placeBeingEdited);
 
-  if (!placeBeingEdited.length) {
+  function updatePlaceSubmitHandler(event) {
+    event.preventDefault();
+    console.log(formState.inputs);
+  }
+
+  if (!placeBeingEdited) {
     return (
-      <div className="center">
-        <h2>Could not find the place.</h2>
-      </div>
+        <div className="center">
+      <Card>
+          <h2>Could not find the place.</h2>
+      </Card>
+        </div>
     );
   }
 
-  return (<form className={classes["place-form"]}>
-    <Input 
+  if (isLoading) {
+    return (
+        <div className="center">
+      <Card>
+          <h2>Lodaing...</h2>
+      </Card>
+        </div>
+    );
+  }
+
+  return (
+    <form className={classes["place-form"]} onSubmit={updatePlaceSubmitHandler}>
+      <Input
         id="title"
         element="input"
         type="text"
         label="title"
         validators={[VALIDATOR_REQUIRE()]}
         errorText="Please enter a valid title."
-        onInput={() =>  {}}
-        value={placeBeingEdited[0].title}
-        valid={true}
-    />
-    <Input 
+        onInput={inputHandler}
+        initialValue={formState.inputs.title.value}
+        initialValidity={formState.inputs.title.isValid}
+      />
+      <Input
         id="description"
         element="textarea"
         label="description"
         validators={[VALIDATOR_MINLENGTH(5)]}
         errorText="Please enter a valid description (atleast 5 characters)."
-        onInput={() =>  {}}
-        value={placeBeingEdited[0].description}
-        valid={true}
-    />
-    <Button type="submit" disabled={true}> 
+        onInput={inputHandler}
+        initialValue={formState.inputs.description.value}
+        initialValidity={formState.inputs.description.isValid}
+      />
+      <Button type="submit" disabled={!formState.isValid}>
         UPDATE PLACE
-    </Button>
-  </form>
+      </Button>
+    </form>
   );
 }
 

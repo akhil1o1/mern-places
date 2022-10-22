@@ -7,7 +7,7 @@ const PLACES = [
     {
         id:"p1",
         imageUrl:"https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-        title:"Empire State building",
+        title:"Empire State building p1",
         description:"famous sky scraper",
         address:"20 W 34th St., New York, NY 10001, United States",
         creator:"u1",
@@ -19,7 +19,7 @@ const PLACES = [
     {
         id:"p2",
         imageUrl:"https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-        title:"Empire State building",
+        title:"Empire State building p2",
         description:"famous sky scraper",
         address:"20 W 34th St., New York, NY 10001, United States",
         creator:"u2",
