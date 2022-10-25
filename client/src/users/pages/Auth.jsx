@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
@@ -9,6 +10,7 @@ import {
   VALIDATOR_REQUIRE,
 } from "../../shared/utils/validators";
 import { useForm } from "../../shared/hooks/form-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 import classes from "./Auth.module.css";
 
 function Auth() {
@@ -28,9 +30,16 @@ function Auth() {
     false
   );
 
+  const navigate = useNavigate(); // react router hook for redirecting programatically
+
+  const authCtx = useContext(AuthContext);
+  const {isLoggedIn, logIn} = authCtx;
+
   function authSubmitHandler(event) {
     event.preventDefault();
     console.log(formState.inputs);
+    logIn();
+    navigate("/"); // redirects to homepage
   }
 
   function switchModeHandler() {
@@ -55,6 +64,10 @@ function Auth() {
       );
     }
     setIsLoginMode((prevMode) => !prevMode);
+  }
+
+  if(isLoggedIn) {
+    
   }
 
   return (

@@ -13,7 +13,7 @@ function NotFound() {
             <h2>
                 Not Found
             </h2>
-            <p>The page you are trying to react doesn't exist.</p>
+            <p>The page you are trying to reach doesn't exist.</p>
         </div>
         <Link to={"/"}> Go to home page. </Link>
     </Card>
