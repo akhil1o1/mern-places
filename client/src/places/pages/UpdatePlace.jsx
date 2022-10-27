@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { Navigate, useParams } from "react-router-dom";
 
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
@@ -9,6 +9,7 @@ import {
   VALIDATOR_REQUIRE,
 } from "../../shared/utils/validators";
 import { useForm } from "../../shared/hooks/form-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 import classes from "./UpdatePlace.module.css";
 
 const PLACES = [
@@ -59,6 +60,9 @@ function UpdatePlace() {
     false
   );
 
+  const authCtx = useContext(AuthContext);
+  const {isLoggedIn} = authCtx;
+
   const placeBeingEdited = PLACES.find((place) => place.id === placeId);
 
   useEffect(() => {
@@ -86,6 +90,10 @@ function UpdatePlace() {
     event.preventDefault();
     console.log(formState.inputs);
   }
+
+  if(!isLoggedIn) {
+    return <Navigate to="/auth"/> ;
+ }
 
   if (!placeBeingEdited) {
     return (

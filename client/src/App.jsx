@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   BrowserRouter as Router,
-  Navigate,
   Route,
   Routes,
 } from "react-router-dom";
@@ -18,6 +17,7 @@ import "./App.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  console.log(isLoggedIn);
 
   function logIn() {
     setIsLoggedIn(true);
@@ -34,19 +34,10 @@ function App() {
         <main>
           <Routes>
             <Route path="/" element={<Users />} />
-            <Route
-              path="/places/new"
-              element={isLoggedIn ? <NewPlace /> : <Navigate to="/auth" />}
-            />
+            <Route path="/places/new" element={<NewPlace />} />
             <Route path="/:userId/places" element={<UserPlaces />} />
-            <Route
-              path="/places/:placeId"
-              element={isLoggedIn ? <UpdatePlace /> : <Navigate to="/auth" />}
-            />
-            <Route
-              path="/auth"
-              element={!isLoggedIn ? <Auth /> : <Navigate to="/" />}
-            />
+            <Route path="/places/:placeId" element={<UpdatePlace />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

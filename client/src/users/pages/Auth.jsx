@@ -33,13 +33,12 @@ function Auth() {
   const navigate = useNavigate(); // react router hook for redirecting programatically
 
   const authCtx = useContext(AuthContext);
-  const {isLoggedIn, logIn} = authCtx;
+  const { logIn } = authCtx;
 
   function authSubmitHandler(event) {
     event.preventDefault();
-    console.log(formState.inputs);
     logIn();
-    navigate("/"); // redirects to homepage
+    navigate("/", { replace: true }); // redirects to homepage and erases current page from history
   }
 
   function switchModeHandler() {
@@ -66,9 +65,6 @@ function Auth() {
     setIsLoginMode((prevMode) => !prevMode);
   }
 
-  if(isLoggedIn) {
-    
-  }
 
   return (
     <Card className={classes.authentication}>

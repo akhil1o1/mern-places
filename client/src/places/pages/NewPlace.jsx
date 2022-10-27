@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Navigate } from "react-router-dom";
 
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import { VALIDATOR_REQUIRE } from "../../shared/utils/validators";
 import { VALIDATOR_MINLENGTH } from "../../shared/utils/validators";
 import { useForm } from "../../shared/hooks/form-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 import classes from "./NewPlace.module.css";
+
 
 function NewPlace() {
    const [formState, inputHandler] = useForm(
@@ -25,6 +28,13 @@ function NewPlace() {
     },
     false
   );
+
+  const authCtx = useContext(AuthContext);
+  const {isLoggedIn} = authCtx;
+
+  if(!isLoggedIn) {
+    return <Navigate to="/auth"/>
+  }
 
 
   function placeSubmitHandler(event) {
