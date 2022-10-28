@@ -1,7 +1,7 @@
 import HttpError from "../Models/http-error.js";
 import { nanoid } from "nanoid";
 
-const PLACES = [
+let PLACES = [
   {
     id: "p1",
     imageUrl:
@@ -42,15 +42,15 @@ export const getPlacesByPlaceId = (req, res, next) => {
 
 export const getPlacesByUserId = (req, res, next) => {
   const { uid } = req.params;
-  const place = PLACES.find((place) => place.creator === uid);
-  if (!place) {
+  const places = PLACES.filter((place) => place.creator === uid);
+  if (places.length === 0) {
     const error = new HttpError(
-      "Could not find the place for provided user id.",
+      "Could not find the places for provided user id.",
       404
     );
     next(error);
   } else {
-    res.json({ place });
+    res.json({ places });
   }
 };
 
@@ -74,7 +74,7 @@ export const updatePlace = (req, res, next) => {
   const { pid } = req.params;
   const { title, description } = req.body;
 
-  const updatedPlace = {...(PLACES.find((place) => place.id === pid))};
+  const updatedPlace = { ...PLACES.find((place) => place.id === pid) };
   updatedPlace.title = title;
   updatedPlace.description = description;
   const placeIndex = PLACES.findIndex((p) => p.id === pid);
@@ -84,8 +84,9 @@ export const updatePlace = (req, res, next) => {
   res.status(200).json({ updatedPlace });
 };
 
-console.log(PLACES);
-
 export const deletePlace = (req, res, next) => {
   const { pid } = req.params;
+  PLACES = PLACES.filter(place => place.id !== pid);
+
+  res.status(200).json({message : "Deleted place successfully"});
 };
