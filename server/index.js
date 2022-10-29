@@ -6,12 +6,14 @@ import mongoose from "mongoose";
 
 import HttpError from "./Models/http-error.js";
 import placesRoutes from "./Routes/places-routes.js";
+import userRoutes from "./Routes/users-routes.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 app.use("/api/places", placesRoutes);
+app.use("/api/users", userRoutes);
 
 app.use((req, res, next) => { //in case the route does not match any of the above
   throw new HttpError("Could not find the route.", 404);

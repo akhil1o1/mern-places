@@ -1,4 +1,5 @@
 import HttpError from "../Models/http-error.js";
+import { validationResult } from "express-validator";
 import { nanoid } from "nanoid";
 
 let PLACES = [
@@ -55,6 +56,11 @@ export const getPlacesByUserId = (req, res, next) => {
 };
 
 export const createPlace = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError("Invalid user input. please check your data.", 422);
+  }
+
   const { title, description, address, creator, coordinates } = req.body;
   const createdPlace = {
     id: nanoid(),
@@ -64,14 +70,18 @@ export const createPlace = (req, res, next) => {
     creator,
     location: coordinates,
   };
-  console.log(createdPlace);
   PLACES.push(createdPlace);
-  console.log(PLACES);
   res.status(201).json({ createdPlace });
 };
 
 export const updatePlace = (req, res, next) => {
   const { pid } = req.params;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new HttpError("Invalid user input. please check your data.", 422);
+  }
+
   const { title, description } = req.body;
 
   const updatedPlace = { ...PLACES.find((place) => place.id === pid) };
@@ -86,7 +96,12 @@ export const updatePlace = (req, res, next) => {
 
 export const deletePlace = (req, res, next) => {
   const { pid } = req.params;
-  PLACES = PLACES.filter(place => place.id !== pid);
 
-  res.status(200).json({message : "Deleted place successfully"});
+  if (!PLACES.find((place) => place.id === pid)) {
+    throw new HttpError("Could not find the place for that id", 404);
+  }
+
+  PLACES = PLACES.filter((place) => place.id !== pid);
+
+  res.status(200).json({ message: "Deleted place successfully" });
 };
