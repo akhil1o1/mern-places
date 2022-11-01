@@ -3,6 +3,7 @@ dotenv.config();
 import axios from "axios";
 import HttpError from "../Models/http-error.js";
 
+// the api being used here is TrueWay Geocoding API from rapid api.
 export const getCoordinates = async (address) => {
   const options = {
     method: "GET",

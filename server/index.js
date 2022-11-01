@@ -29,7 +29,12 @@ app.use((error, req, res, next) => {
     .json({ message: error.message || "An unknown error occurred!" });
 });
 
+mongoose.connect(process.env.MONGODB_URI)
+.then(() => {
+  app.listen(process.env.PORT);
+  console.log(`DB connected and server is listening at port ${process.env.PORT}`);
+})
+.catch((error) => console.log(error));
 
-app.listen(process.env.PORT, () => {
-  console.log(`server is listening at port ${process.env.PORT}`);
-});
+
+

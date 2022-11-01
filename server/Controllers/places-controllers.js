@@ -1,7 +1,9 @@
-import HttpError from "../Models/http-error.js";
-import { validationResult } from "express-validator";
-import { getCoordinates } from "../Utils/location.js";
 import { nanoid } from "nanoid";
+import { validationResult } from "express-validator";
+
+import HttpError from "../Models/http-error.js";
+import Place from "../Models/place-model.js";
+import { getCoordinates } from "../Utils/location.js";
 
 let PLACES = [
   {
@@ -32,13 +34,13 @@ let PLACES = [
   },
 ];
 
-export const getPlacesByPlaceId = (req, res, next) => {
-  const { pid } = req.params;
-  const place = PLACES.find((place) => place.id === pid);
-  if (!place) {
-    throw new HttpError("Could not find the place for provided place id", 404);
-  } else {
-    res.json({ place });
+export const getPlacesByPlaceId = async (req, res, next) => {
+  const { pid: placeId} = req.params;
+  try {
+    const placeFound = await Place.findById(placeId);
+    res.json({place : placeFound});
+  } catch (error) {
+     next(new HttpError("Could not find the place for provided place id", 404));
   }
 };
 
@@ -59,7 +61,9 @@ export const getPlacesByUserId = (req, res, next) => {
 export const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-     return next(new HttpError("Invalid user input. please check your data.", 422));
+    return next(
+      new HttpError("Invalid user input. please check your data.", 422)
+    );
   }
 
   const { title, description, address, creator } = req.body;
@@ -72,16 +76,22 @@ export const createPlace = async (req, res, next) => {
     return next(error);
   }
 
-  const createdPlace = {
-    id: nanoid(),
+  const createdPlace = new Place({
     title,
     description,
     address,
     creator,
-    location:coordinates,
-  };
-  PLACES.push(createdPlace);
-  res.status(201).json({ createdPlace });
+    image:
+      "https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
+    location: coordinates,
+  });
+
+  try {
+    const response = await createdPlace.save();
+    res.status(201).json({place : response});
+  } catch (error) {
+    next(new HttpError("Could not create the document", 500));
+  }
 };
 
 export const updatePlace = (req, res, next) => {
