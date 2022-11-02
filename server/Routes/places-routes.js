@@ -10,9 +10,9 @@ import {
 
 const router = Router();
 
-router.get("/:pid", getPlacesByPlaceId);
+router.get("/:placeId", getPlacesByPlaceId);
 
-router.get("/user/:uid", getPlacesByUserId);
+router.get("/user/:userId", getPlacesByUserId);
 
 router.post(
   "/",
@@ -25,7 +25,7 @@ router.post(
 );
 
 router.patch(
-  "/:pid",
+  "/:placeId",
   [
     body("title").trim().not().isEmpty(),
     body("description").isLength({ min: 5 }),
@@ -33,6 +33,6 @@ router.patch(
   updatePlace
 );
 
-router.delete("/:pid", deletePlace);
+router.delete("/:placeId", deletePlace);
 
 export default router;
