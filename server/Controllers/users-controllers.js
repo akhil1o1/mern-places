@@ -1,58 +1,83 @@
-import HttpError from "../Models/http-error.js";
 import { validationResult } from "express-validator";
 import { nanoid } from "nanoid";
 
-const USERS = [
-  {
-    id: "u1",
-    name: "akhil panwar",
-    email: "akhil@test.com",
-    password: "akhil123",
-  },
-  {
-    id: "u2",
-    name: "anil rana",
-    email: "anil@test.com",
-    password: "anil123",
-  },
-];
+import HttpError from "../Models/http-error.js";
+import User from "../Models/user-model.js";
 
-export const getUsers = (req, res, next) => {
-  res.json({ USERS });
+
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({}, "-password"); // exclude password field.
+    res.json(users);
+  } catch (error) {
+    next (new HttpError("Fetching users failed. Please try again later", 500));
+  }
 };
 
-export const signup = (req, res, next) => {
+export const signup = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors);
   if (!errors.isEmpty()) {
-    throw new HttpError("Invalid user input. please check your data.", 422);
+    // to check validation errors from express validators
+    return next(
+      new HttpError("Invalid user input. please check your data.", 422)
+    );
   }
 
-  const { name, email, password } = req.body;
+  const { name, email, password, places } = req.body;
 
-  const hasUser = USERS.find((user) => user.email === email);
-  if (hasUser) {
-    throw new HttpError("Could not create user. Email already exists.", 422);
+  let userAlreadyExists;
+  try {
+    userAlreadyExists = await User.findOne({ email: email });
+  } catch (error) {
+    return next(
+      new HttpError("Signing up failed. please try again later.", 500)
+    );
   }
 
-  const id = nanoid();
-  const createdUser = { id, name, email, password };
+  if (userAlreadyExists) {
+    return next(new HttpError("User already exists. Please login instead."));
+  }
 
-  USERS.push(createdUser);
+  const newUser = new User({
+    name,
+    email,
+    password,
+    image:
+      "https://media-exp1.licdn.com/dms/image/C5603AQFrTOsBbpVAYw/profile-displayphoto-shrink_800_800/0/1641206424684?e=1672876800&v=beta&t=gDpDaTjD4j3KGfC3WdnT_6Za75l0WdoEhHkPTJ_cz0g",
+    places,
+  });
+
+  let createdUser;
+  try {
+    createdUser = await newUser.save();
+  } catch (error) {
+    return next(
+      new HttpError("Signing up failed. Please try again later.", 500)
+    );
+  }
 
   res.status(201).json({ createdUser });
 };
 
-export const login = (req, res, next) => {
+export const login = async (req, res, next) => {
   const { email, password } = req.body;
-  
-  const matchedUser = USERS.find((user) => {
-    return user.email === email && user.password === password;
-  });
+
+  let matchedUser;
+  try {
+    matchedUser = await User.findOne({ email: email });
+  } catch (error) {
+    return next(new HttpError("Login failed. please try again later.", 500));
+  }
 
   if (!matchedUser) {
-    throw new HttpError("Could not identify the user.", 401);
-  } else {
-    res.json({ message: "Logged in" });
+    return next(
+      new HttpError("Email does not exist. Please sign up instead.", 401)
+    );
   }
+
+  if (matchedUser.password !== password) {
+    return next(new HttpError("Wrong password.", 401));
+  }
+
+  res.json({ message: "Logged in" });
 };

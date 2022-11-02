@@ -1,38 +1,9 @@
-import { nanoid } from "nanoid";
 import { validationResult } from "express-validator";
 
 import HttpError from "../Models/http-error.js";
 import Place from "../Models/place-model.js";
 import { getCoordinates } from "../Utils/location.js";
 
-let PLACES = [
-  {
-    id: "p1",
-    imageUrl:
-      "https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-    title: "Empire State building p1",
-    description: "famous sky scraper",
-    address: "20 W 34th St., New York, NY 10001, United States",
-    creator: "u1",
-    location: {
-      lat: "40.7483565",
-      lng: "-73.9878531",
-    },
-  },
-  {
-    id: "p2",
-    imageUrl:
-      "https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-    title: "Empire State building p2",
-    description: "famous sky scraper",
-    address: "20 W 34th St., New York, NY 10001, United States",
-    creator: "u2",
-    location: {
-      lat: "40.7483565",
-      lng: "-73.9878531",
-    },
-  },
-];
 
 export const getPlacesByPlaceId = async (req, res, next) => {
   const { placeId } = req.params;
@@ -58,7 +29,7 @@ export const getPlacesByUserId = async (req, res, next) => {
 
 export const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
+  if (!errors.isEmpty()) { // to check validation errors from express validators
     return next(
       new HttpError("Invalid user input. please check your data.", 422)
     );
@@ -67,7 +38,6 @@ export const createPlace = async (req, res, next) => {
   const { title, description, address, creator } = req.body;
 
   let coordinates;
-
   try {
     coordinates = await getCoordinates(address);
   } catch (error) {
@@ -99,7 +69,7 @@ export const updatePlace = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    throw new HttpError("Invalid user input. please check your data.", 422);
+    return next(new HttpError("Invalid user input. please check your data.", 422));
   }
 
   const { title, description } = req.body;
@@ -126,6 +96,6 @@ export const deletePlace = async (req, res, next) => {
   } catch (error) {
     return next(new HttpError("Could not find the place for that id", 404));
   }
-  
+
   res.status(200).json({ message: "Deleted place successfully" });
 };
