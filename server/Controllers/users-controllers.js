@@ -1,5 +1,4 @@
 import { validationResult } from "express-validator";
-import { nanoid } from "nanoid";
 
 import HttpError from "../Models/http-error.js";
 import User from "../Models/user-model.js";
@@ -7,7 +6,7 @@ import User from "../Models/user-model.js";
 
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({}, "-password"); // exclude password field.
+    const users = await User.find({}, "-password"); //to exclude password field or ("name  email") => include only name and email
     res.json(users);
   } catch (error) {
     next (new HttpError("Fetching users failed. Please try again later", 500));
@@ -23,7 +22,7 @@ export const signup = async (req, res, next) => {
     );
   }
 
-  const { name, email, password, places } = req.body;
+  const { name, email, password } = req.body;
 
   let userAlreadyExists;
   try {
@@ -44,7 +43,7 @@ export const signup = async (req, res, next) => {
     password,
     image:
       "https://media-exp1.licdn.com/dms/image/C5603AQFrTOsBbpVAYw/profile-displayphoto-shrink_800_800/0/1641206424684?e=1672876800&v=beta&t=gDpDaTjD4j3KGfC3WdnT_6Za75l0WdoEhHkPTJ_cz0g",
-    places,
+    places: [], //place will get populated with placeIDs of places created by user.
   });
 
   let createdUser;
