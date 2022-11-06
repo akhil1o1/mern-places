@@ -18,11 +18,11 @@ function UserList(props) {
         {
             props.items.map((user) => (
                 <UserItem
-                    key={user.id}
+                    key={user._id}
                     id={user.id}
                     name={user.name}
                     image={user.image}
-                    placeCount={user.places}
+                    placeCount={user.places.length}
                 />
             ))
         }

@@ -44,10 +44,39 @@ function Auth() {
   const authSubmitHandler = async (event) => {
     event.preventDefault();
 
+    setIsLoading(true);
+
     if (isLoginMode) {
-    } else {
+      //log in
       try {
-        setIsLoading(true);
+        const response = await fetch(`${API_BASE}/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+
+        const responseData = await response.json();
+        console.log(responseData);
+        setIsLoading(false);
+        if (!response.ok) {
+          throw new Error(responseData.message); //error message will come from backend.
+        }
+        logIn();
+        navigate("/", { replace: true }); // redirects to homepage and erases current page from history
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+        setError(error.message || "Soemthing went wrong, please try again.");
+      }
+    
+    } else {
+      //sign up request.
+      try {
         const response = await fetch(`${API_BASE}/signup`, {
           method: "POST",
           headers: {
@@ -60,11 +89,11 @@ function Auth() {
           }),
         });
 
-        const responsedata = await response.json();
-        console.log(responsedata);
+        const responseData = await response.json();
+        console.log(responseData);
         setIsLoading(false);
         if (!response.ok) {
-          throw new Error(responsedata.message); //error message will come from backend.
+          throw new Error(responseData.message); //error message will come from backend.
         }
         logIn();
         navigate("/", { replace: true }); // redirects to homepage and erases current page from history
@@ -106,9 +135,7 @@ function Auth() {
 
   return (
     <>
-    <ErrorModal
-      error={error} onClear={errorHandler}
-    />
+      <ErrorModal error={error} onClear={errorHandler} />
       <Card className={classes.authentication}>
         {isLoading && <LoadingSpinner asOverlay />}
         <h2>Login Required</h2>
