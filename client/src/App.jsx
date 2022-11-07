@@ -17,18 +17,21 @@ import "./App.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
   console.log(isLoggedIn);
 
-  function logIn() {
+  function logIn(uid) {
     setIsLoggedIn(true);
+    setUserId(uid);
   }
 
   function logOut() {
     setIsLoggedIn(false);
+    setUserId(null);
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, logIn, logOut }}>
+    <AuthContext.Provider value={{ isLoggedIn, logIn, logOut, userId }}>
       <Router>
         <MainNavigation />
         <main>

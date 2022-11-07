@@ -12,13 +12,13 @@ import {
   VALIDATOR_REQUIRE,
 } from "../../shared/utils/validators";
 import { useForm } from "../../shared/hooks/form-hook";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import classes from "./Auth.module.css";
 
 function Auth() {
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -40,68 +40,43 @@ function Auth() {
   const { logIn } = authCtx;
 
   const API_BASE = "http://localhost:5000/api/users";
+  // navigate("/", { replace: true }); // redirects to homepage and erases current page from
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
 
-    setIsLoading(true);
-
     if (isLoginMode) {
-      //log in
+      //log in request
       try {
-        const response = await fetch(`${API_BASE}/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+        const responseData = await sendRequest(
+          `${API_BASE}/login`,
+          "POST",
+          { "Content-type": "Application/json" },
+          JSON.stringify({
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
-          }),
-        });
+          })
+        );
 
-        const responseData = await response.json();
-        console.log(responseData);
-        setIsLoading(false);
-        if (!response.ok) {
-          throw new Error(responseData.message); //error message will come from backend.
-        }
-        logIn();
-        navigate("/", { replace: true }); // redirects to homepage and erases current page from history
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false);
-        setError(error.message || "Soemthing went wrong, please try again.");
-      }
-    
+        logIn(responseData.user._id);
+        navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
+      } catch (error) {} // error will be handled in useHttpClient hook
     } else {
       //sign up request.
       try {
-        const response = await fetch(`${API_BASE}/signup`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+        const responseData = await sendRequest(
+          `${API_BASE}/signup`,
+          "POST",
+          { "Content-type": "Application/json" },
+          JSON.stringify({
             name: formState.inputs.name.value,
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
-          }),
-        });
-
-        const responseData = await response.json();
-        console.log(responseData);
-        setIsLoading(false);
-        if (!response.ok) {
-          throw new Error(responseData.message); //error message will come from backend.
-        }
-        logIn();
-        navigate("/", { replace: true }); // redirects to homepage and erases current page from history
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false);
-        setError(error.message || "Soemthing went wrong, please try again.");
-      }
+          })
+        );
+        logIn(responseData.createdUser._id);
+        navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
+      } catch (error) {} // error will be handled in useHttpClient hook
     }
   };
 
@@ -129,13 +104,9 @@ function Auth() {
     setIsLoginMode((prevMode) => !prevMode);
   }
 
-  function errorHandler() {
-    setError(null);
-  }
-
   return (
     <>
-      <ErrorModal error={error} onClear={errorHandler} />
+      <ErrorModal error={error} onClear={clearError} />
       <Card className={classes.authentication}>
         {isLoading && <LoadingSpinner asOverlay />}
         <h2>Login Required</h2>

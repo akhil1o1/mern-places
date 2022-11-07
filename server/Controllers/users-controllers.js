@@ -13,6 +13,7 @@ export const getUsers = async (req, res, next) => {
   }
 };
 
+// sign up controller
 export const signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -42,7 +43,7 @@ export const signup = async (req, res, next) => {
     email,
     password,
     image:
-      "https://media-exp1.licdn.com/dms/image/C5603AQFrTOsBbpVAYw/profile-displayphoto-shrink_800_800/0/1641206424684?e=1672876800&v=beta&t=gDpDaTjD4j3KGfC3WdnT_6Za75l0WdoEhHkPTJ_cz0g",
+      "https://secure.gravatar.com/avatar/4e763eee077f42867e427cd95946d18c?s=110&d=mm&r=g",
     places: [], //place will get populated with placeIDs of places created by user.
   });
 
@@ -58,6 +59,8 @@ export const signup = async (req, res, next) => {
   res.status(201).json({ createdUser });
 };
 
+
+//login controller
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -78,5 +81,5 @@ export const login = async (req, res, next) => {
     return next(new HttpError("Wrong password.", 401));
   }
 
-  res.json({ message: "Logged in" });
+  res.json({ message: "Logged in", user: matchedUser });
 };

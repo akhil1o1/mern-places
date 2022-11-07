@@ -1,42 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
 import PlaceList from "../components/PlaceList";
-
-const PLACES = [
-    {
-        id:"p1",
-        imageUrl:"https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-        title:"Empire State building p1",
-        description:"famous sky scraper",
-        address:"20 W 34th St., New York, NY 10001, United States",
-        creator:"u1",
-        location:{
-            lat:"40.7483565",
-            lng:"-73.9878531",
-        }        
-    },
-    {
-        id:"p2",
-        imageUrl:"https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
-        title:"Empire State building p2",
-        description:"famous sky scraper",
-        address:"20 W 34th St., New York, NY 10001, United States",
-        creator:"u2",
-        location:{
-            lat:"40.7483565",
-            lng:"-73.9878531",
-        }        
-    }
-];
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 
 function UserPlaces() {
+  const [placesByUser, setPlacesByUser] = useState();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-    const {userId}  = useParams();
-    console.log(userId);
-    const placesLoadedByUser = PLACES.filter((place) => place.creator=== userId);
+  const { userId } = useParams();
+  console.log(userId);
 
-    return <PlaceList items={placesLoadedByUser}/>
+  const API_BASE = "http://localhost:5000/api/places";
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const responseData = await sendRequest(`${API_BASE}/user/${userId}`);
+        setPlacesByUser(responseData.places);
+      } catch (error) {}
+    };
+
+    fetchPlaces();
+  }, [sendRequest, userId]);
+
+  return <>
+  <ErrorModal error={error} onClear={clearError}/>
+  {isLoading && <div className="center">
+    <LoadingSpinner />
+  </div>}
+  {!isLoading && placesByUser && <PlaceList items={placesByUser} />}
+  </>;
 }
 
 export default UserPlaces;
