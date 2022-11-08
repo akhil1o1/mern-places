@@ -16,6 +16,7 @@ function UserPlaces() {
   const API_BASE = "http://localhost:5000/api/places";
 
   useEffect(() => {
+    //fetching places uploaded by user.
     const fetchPlaces = async () => {
       try {
         const responseData = await sendRequest(`${API_BASE}/user/${userId}`);
@@ -26,13 +27,26 @@ function UserPlaces() {
     fetchPlaces();
   }, [sendRequest, userId]);
 
-  return <>
-  <ErrorModal error={error} onClear={clearError}/>
-  {isLoading && <div className="center">
-    <LoadingSpinner />
-  </div>}
-  {!isLoading && placesByUser && <PlaceList items={placesByUser} />}
-  </>;
+  function onDeletingPlaceHandler(deletedPlaceId) {
+    // to update placesByUser when a place get deleted
+    setPlacesByUser((prev) => {
+      return prev.filter((place) => place._id !== deletedPlaceId);
+    });
+  }
+
+  return (
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && placesByUser && (
+        <PlaceList items={placesByUser} onDeletingPlaceHandler={onDeletingPlaceHandler}/>
+      )}
+    </>
+  );
 }
 
 export default UserPlaces;

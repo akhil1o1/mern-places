@@ -7,7 +7,7 @@ import classes from "./Navlinks.module.css";
 
 function Navlinks(props) {
   const authCtx = useContext(AuthContext);
-  const { isLoggedIn, logOut } = authCtx;
+  const { isLoggedIn, logOut, userId } = authCtx;
 
   function logOutHandler() {
     logOut();
@@ -20,7 +20,7 @@ function Navlinks(props) {
       </li>
       {isLoggedIn && (
         <li>
-          <NavLink to="/u1/places">MY PLACES</NavLink>
+          <NavLink to={`/${userId}/places`}>MY PLACES</NavLink>
         </li>
       )}
       {isLoggedIn && (

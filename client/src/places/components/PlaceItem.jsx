@@ -4,15 +4,19 @@ import Card from "../../shared/components/UIElements/Card";
 import Button from "../../shared/components/FormElements/Button";
 import Modal from "../../shared/components/UIElements/Modal";
 import Map from "../../shared/components/UIElements/Map";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import classes from "./PlaceItem.module.css";
 
 function PlaceItem(props) {
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const authCtx = useContext(AuthContext);
-  const { isLoggedIn } = authCtx;
+  const { userId } = authCtx;
 
   function openMapHandler() {
     setShowMap(true);
@@ -30,13 +34,20 @@ function PlaceItem(props) {
     setShowConfirmModal(false);
   }
 
-  function deleteHandler() {
-    console.log("DELETING...");
+  const API_BASE = "http://localhost:5000/api/places";
+
+  const deleteHandler = async () => {
     setShowConfirmModal(false);
-  }
+    // deleting place
+    try {
+      await sendRequest(`${API_BASE}/${props.id}`, "DELETE");
+      props.onDeletingPlaceHandler(props.id); // to update placesByUser in userPlaces.
+    } catch (error) {} // error being handled in UseHttpClient hook.
+  };
 
   return (
     <>
+    <ErrorModal error={error} onClear={clearError}/>
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -73,6 +84,7 @@ function PlaceItem(props) {
       </Modal>
       <li className={classes["place-item"]}>
         <Card className={classes["place-item__content"]}>
+        {isLoading && <LoadingSpinner asOverlay/>}
           <div className={classes["place-item__image"]}>
             <img src={props.image} alt={props.title} />
           </div>
@@ -85,12 +97,14 @@ function PlaceItem(props) {
             <Button inverse onClick={openMapHandler}>
               View on map
             </Button>
-            {isLoggedIn && <>
-              <Button to={`/places/${props.id}`}>Edit</Button>
-            <Button danger onClick={openConfirmModalHandler}>
-              Delete
-            </Button>
-            </>}
+            {userId === props.creatorId && (
+              <>
+                <Button to={`/places/${props.id}`}>Edit</Button>
+                <Button danger onClick={openConfirmModalHandler}>
+                  Delete
+                </Button>
+              </>
+            )}
           </div>
         </Card>
       </li>

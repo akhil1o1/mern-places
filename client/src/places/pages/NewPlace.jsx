@@ -33,7 +33,7 @@ function NewPlace() {
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); //react router hook to redirect programmatically
 
   const authCtx = useContext(AuthContext);
   const { isLoggedIn, userId } = authCtx;
@@ -58,8 +58,7 @@ function NewPlace() {
         })
       );
 
-      // redirect to home page
-      navigate("/");
+      navigate(`/${userId}/places`); // navigate to MyPlaces page.
     } catch (error) {} // error will be handled in useHttpClient hook.
   };
 
@@ -70,7 +69,9 @@ function NewPlace() {
   return (
     <>
       <ErrorModal error={error} onClear={clearError} />
-      {isLoading && <LoadingSpinner asOverlay />}
+      {isLoading && <div className="center">
+          <LoadingSpinner asOverlay />
+        </div>}
       <form className={classes["place-form"]} onSubmit={placeSubmitHandler}>
         <Input
           id="title"

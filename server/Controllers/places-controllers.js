@@ -6,7 +6,7 @@ import Place from "../Models/place-model.js";
 import User from "../Models/user-model.js";
 import { getCoordinates } from "../Utils/location.js";
 
-export const getPlacesByPlaceId = async (req, res, next) => {
+export const getPlaceByPlaceId = async (req, res, next) => {
   const { placeId } = req.params;
 
   try {

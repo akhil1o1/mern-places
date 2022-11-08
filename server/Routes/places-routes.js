@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import {
-  getPlacesByPlaceId,
+  getPlaceByPlaceId,
   getPlacesByUserId,
   createPlace,
   updatePlace,
@@ -10,7 +10,7 @@ import {
 
 const router = Router();
 
-router.get("/:placeId", getPlacesByPlaceId);
+router.get("/:placeId", getPlaceByPlaceId);
 
 router.get("/user/:userId", getPlacesByUserId);
 
