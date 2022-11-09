@@ -18,8 +18,8 @@ function UserList(props) {
         {
             props.items.map((user) => (
                 <UserItem
-                    key={user._id}
-                    id={user._id}
+                    key={user.id}
+                    id={user.id}
                     name={user.name}
                     image={user.image}
                     placeCount={user.places.length}

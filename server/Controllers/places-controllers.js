@@ -9,23 +9,45 @@ import { getCoordinates } from "../Utils/location.js";
 export const getPlaceByPlaceId = async (req, res, next) => {
   const { placeId } = req.params;
 
+  let placeFound;
   try {
-    const placeFound = await Place.findById(placeId);
-    res.json({ place: placeFound });
+    placeFound = await Place.findById(placeId);
   } catch (error) {
-    next(new HttpError("Could not find the place for provided place id", 404));
+    return next(
+      new HttpError("Could not fetch the place. Please try again later.", 500)
+    );
   }
+
+  if (!placeFound) {
+    return next(
+      new HttpError("Could not find the place for the provided place id.", 404)
+    );
+  }
+
+  res.json({ place: placeFound.toObject({ getters: true }) }); // will add a id field along with _id before sending the response.
 };
 
 export const getPlacesByUserId = async (req, res, next) => {
   const { userId } = req.params;
 
+  let placesByUser;
   try {
-    const places = await Place.find({ creator: userId });
-    res.json({ places });
+    placesByUser = await Place.find({ creator: userId });
   } catch (error) {
-    next(new HttpError("Could not find places for provided userId", 404));
+    return next(
+      new HttpError("Could not fetch the places. Please try again later.", 500)
+    );
   }
+
+  if (!placesByUser) {
+    return next(
+      new HttpError("Could not find places for the provided user id.", 404)
+    );
+  }
+
+  res.json({
+    places: placesByUser.map((place) => place.toObject({ getters: true })),
+  });
 };
 
 export const createPlace = async (req, res, next) => {
@@ -61,7 +83,9 @@ export const createPlace = async (req, res, next) => {
     //checking if user with creatorID exists
     user = await User.findById(creator);
   } catch (error) {
-    return next(new HttpError("Could not create the document", 500));
+    return next(
+      new HttpError("Could not create the place, please try again later.", 500)
+    );
   }
 
   if (!user) {
@@ -69,7 +93,7 @@ export const createPlace = async (req, res, next) => {
   }
 
   console.log(user);
-  // unlike regular save operation, transactions dont create collection. create collection manually in mongoDB atlas if it doesn't exist already.
+  // unlike regular save operation, transactions don,t create collection. create collection manually in mongoDB atlas if it doesn't exist already.
   let createdPlace;
   try {
     // starting session and performing transactions / unrelated operations
@@ -81,10 +105,12 @@ export const createPlace = async (req, res, next) => {
     await user.save({ session: sess }); //making this operation part of the session
     await sess.commitTransaction(); // saving changes if all the operation are successful otherwise it will undo the changes made to documents if any of the operation that is part of the session fails.
   } catch (error) {
-    return next(new HttpError("Could not create the document.", 500));
+    return next(
+      new HttpError("Could not create the place, please try again later.", 500)
+    );
   }
 
-  res.status(201).json({ place: createdPlace });
+  res.status(201).json({ place: createdPlace.toObject({ getters: true }) });
 };
 
 export const updatePlace = async (req, res, next) => {
@@ -107,10 +133,12 @@ export const updatePlace = async (req, res, next) => {
       { returnDocument: "after" }
     );
   } catch (error) {
-    return next(new HttpError("Could not update the document.", 500));
+    return next(
+      new HttpError("Could not update the place, please try again later.", 500)
+    );
   }
 
-  res.status(200).json({ updatedPlace });
+  res.status(200).json({ place: updatedPlace.toObject({ getters: true }) });
 };
 
 export const deletePlace = async (req, res, next) => {
@@ -118,9 +146,9 @@ export const deletePlace = async (req, res, next) => {
   //deleting it in 2 steps to be able to use populate method instead of using findByIdAndDelete to delete in 1 step.
   let place;
   try {
-    place = await Place.findById(placeId).populate("creator");// gives access to user document with id=creator
+    place = await Place.findById(placeId).populate("creator"); // gives access to user document with id=creator
   } catch (error) {
-    return next(new HttpError("Could not delete the place.", 500));
+    return next(new HttpError("Something went wrong, please try again later.", 500));
   }
 
   if (!place) {
@@ -132,12 +160,12 @@ export const deletePlace = async (req, res, next) => {
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    await Place.findByIdAndRemove({_id: placeId}, {session: sess});
+    await Place.findByIdAndRemove({ _id: placeId }, { session: sess });
     place.creator.places.pull(place); // it will remove the placeID from places array in user document. it is possible due to populate method.
-    await place.creator.save({session : sess});
+    await place.creator.save({ session: sess });
     await sess.commitTransaction();
   } catch (error) {
-    return next(new HttpError("Could not delete the place.", 500));
+    return next(new HttpError("Could not delete the place, please try again later.", 500));
   }
 
   res.status(200).json({ message: "Deleted place successfully." });

@@ -20,8 +20,8 @@ function PlaceList(props) {
     <ul className={classes["place-list"]}>
       {props.items.map((place) => (
         <PlaceItem 
-        key={place._id} 
-        id={place._id} 
+        key={place.id} 
+        id={place.id} 
         image={place.image} 
         title={place.title}
         description={place.description}

@@ -16,7 +16,7 @@ function Users() {
     const fetchUsers = async () => {
       try {
         const responseData = await sendRequest(API_BASE);
-        setUsers(responseData);
+        setUsers(responseData.users);
       } catch (error) {} // error will be handled in useHttpClient hook.
     };
     fetchUsers();

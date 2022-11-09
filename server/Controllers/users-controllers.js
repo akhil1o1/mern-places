@@ -3,14 +3,17 @@ import { validationResult } from "express-validator";
 import HttpError from "../Models/http-error.js";
 import User from "../Models/user-model.js";
 
-
 export const getUsers = async (req, res, next) => {
+  let users;
   try {
-    const users = await User.find({}, "-password"); //to exclude password field or ("name  email") => include only name and email
-    res.json(users);
+    users = await User.find({}, "-password"); //to exclude password field or ("name  email") => include only name and email
   } catch (error) {
-    next (new HttpError("Fetching users failed. Please try again later", 500));
+    return next(
+      new HttpError("Fetching users failed. Please try again later", 500)
+    );
   }
+
+  res.json({ users: users.map((user) => user.toObject({ getters: true })) }); // will add a id field along with _id before sending the response.
 };
 
 // sign up controller
@@ -35,7 +38,9 @@ export const signup = async (req, res, next) => {
   }
 
   if (userAlreadyExists) {
-    return next(new HttpError("User already exists. Please login instead."));
+    return next(
+      new HttpError("User already exists. Please login instead.", 422)
+    );
   }
 
   const newUser = new User({
@@ -56,9 +61,8 @@ export const signup = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ createdUser });
+  res.status(201).json({ createdUser: createdUser.toObject({getters : true}) });
 };
-
 
 //login controller
 export const login = async (req, res, next) => {
@@ -81,5 +85,8 @@ export const login = async (req, res, next) => {
     return next(new HttpError("Wrong password.", 401));
   }
 
-  res.json({ message: "Logged in", user: matchedUser });
+  res.json({
+    message: "Logged in",
+    user: matchedUser.toObject({ getters: true }),
+  });
 };

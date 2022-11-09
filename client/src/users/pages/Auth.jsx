@@ -58,7 +58,7 @@ function Auth() {
           })
         );
 
-        logIn(responseData.user._id);
+        logIn(responseData.user.id);
         navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
       } catch (error) {} // error will be handled in useHttpClient hook
     } else {
@@ -74,7 +74,7 @@ function Auth() {
             password: formState.inputs.password.value,
           })
         );
-        logIn(responseData.createdUser._id);
+        logIn(responseData.createdUser.id);
         navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
       } catch (error) {} // error will be handled in useHttpClient hook
     }

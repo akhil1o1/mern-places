@@ -30,7 +30,7 @@ function UserPlaces() {
   function onDeletingPlaceHandler(deletedPlaceId) {
     // to update placesByUser when a place get deleted
     setPlacesByUser((prev) => {
-      return prev.filter((place) => place._id !== deletedPlaceId);
+      return prev.filter((place) => place.id !== deletedPlaceId);
     });
   }
 
