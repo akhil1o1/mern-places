@@ -6,6 +6,7 @@ import Button from "../../shared/components/FormElements/Button";
 import Card from "../../shared/components/UIElements/Card";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
@@ -44,6 +45,8 @@ function Auth() {
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
+
+    console.log(formState.inputs);
 
     if (isLoginMode) {
       //log in request
@@ -86,6 +89,7 @@ function Auth() {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -97,6 +101,10 @@ function Auth() {
             value: "",
             isValid: false,
           },
+          image: {
+            value: null,
+            isValid: false,
+          }
         },
         false
       );
@@ -123,6 +131,7 @@ function Auth() {
               errorText="Please enter a name."
             />
           )}
+          {!isLoginMode && <ImageUpload id="image" center onInput={inputHandler}/>}
           <Input
             id="email"
             element="input"

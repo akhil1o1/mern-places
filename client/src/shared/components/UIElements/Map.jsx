@@ -1,6 +1,5 @@
 import React from "react";
 
-
 function Map(props) {
   return (
     <iframe
@@ -11,13 +10,7 @@ function Map(props) {
       scrolling="no"
       marginHeight="0"
       marginWidth="0"
-      src={
-        "https://maps.google.com/maps?q=" +
-        props.coordinates.lat.toString() +
-        "," +
-        props.coordinates.lng.toString() +
-        "&t=&z=15&ie=UTF8&iwloc=&output=embed"
-      }
+      src={`https://maps.google.com/maps?q=${props.coordinates.lat.toString()},${props.coordinates.lng.toString()}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
     ></iframe>
   );
 }
