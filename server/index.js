@@ -11,6 +11,7 @@ import userRoutes from "./Routes/users-routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+// app.use(express.urlencoded({extended: true})); // needed to handle form data other wise not required
 
 app.use("/api/places", placesRoutes);
 app.use("/api/users", userRoutes);

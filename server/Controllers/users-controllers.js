@@ -19,6 +19,7 @@ export const getUsers = async (req, res, next) => {
 // sign up controller
 export const signup = async (req, res, next) => {
   const errors = validationResult(req);
+  console.log(errors);
   if (!errors.isEmpty()) {
     // to check validation errors from express validators
     return next(
@@ -27,6 +28,7 @@ export const signup = async (req, res, next) => {
   }
 
   const { name, email, password } = req.body;
+  console.log(name, email, password);
 
   let userAlreadyExists;
   try {

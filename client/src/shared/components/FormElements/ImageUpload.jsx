@@ -43,6 +43,9 @@ function ImageUpload(props) {
     setPreviewUrl(fileReader.result);
    }
    fileReader.readAsDataURL(imageFile);
+
+   //file reader alternative
+  //  setPreviewUrl(window.URL.createObjectURL(imageFile)); // read mdn docs 
   },[imageFile])
 
   function pickImageHandler() {

@@ -67,15 +67,18 @@ function Auth() {
     } else {
       //sign up request.
       try {
+        console.log(formState.inputs);
+        // FormData browser api allows to send images with text data, images are binary data hence we cant use JSON.stringify() on it.
+        const formData = new FormData(); 
+        formData.append("name", formState.inputs.name.value);
+        formData.append("email", formState.inputs.email.value);
+        formData.append("password", formState.inputs.password.value);
+        formData.append("image", formState.inputs.image.value);
+
         const responseData = await sendRequest(
           `${API_BASE}/signup`,
           "POST",
-          { "Content-type": "Application/json" },
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          })
+          formData, // fetch api will automatically add headers when sending formData.
         );
         logIn(responseData.createdUser.id);
         navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
@@ -119,7 +122,7 @@ function Auth() {
         {isLoading && <LoadingSpinner asOverlay />}
         <h2>Login Required</h2>
         <hr />
-        <form onSubmit={authSubmitHandler}>
+        <form onSubmit={authSubmitHandler} >
           {!isLoginMode && (
             <Input
               id="name"
