@@ -78,7 +78,7 @@ function Auth() {
         const responseData = await sendRequest(
           `${API_BASE}/signup`,
           "POST",
-          formData, // fetch api will automatically add headers when sending formData.
+          formData, // fetch api will automatically add headers when working with formData.
         );
         logIn(responseData.createdUser.id);
         navigate("/", { replace: true }); // redirects to homepage and erases current page from history.

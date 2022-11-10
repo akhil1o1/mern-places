@@ -34,19 +34,20 @@ function ImageUpload(props) {
   console.log(imageFile);
 
   useEffect(() => {
-   if(!imageFile) { // if image is undefined 
-    return;
-   }
-   // FileReader is a browser api to convert files to readable urls.
-   const fileReader = new FileReader();
-   fileReader.onload = () => {
-    setPreviewUrl(fileReader.result);
-   }
-   fileReader.readAsDataURL(imageFile);
+    if (!imageFile) {
+      // if image is undefined
+      return;
+    }
+    // FileReader is a browser api to convert files to readable urls.
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewUrl(fileReader.result);
+    };
+    fileReader.readAsDataURL(imageFile);
 
-   //file reader alternative
-  //  setPreviewUrl(window.URL.createObjectURL(imageFile)); // read mdn docs 
-  },[imageFile])
+    //file reader alternative
+    //  setPreviewUrl(window.URL.createObjectURL(imageFile)); // read mdn docs
+  }, [imageFile]);
 
   function pickImageHandler() {
     imageUploadRef.current.click(); // to open file uploader when button is clicked.
@@ -58,7 +59,7 @@ function ImageUpload(props) {
         id={props.id}
         ref={imageUploadRef}
         onChange={imageUploadChangeHandler} // will execute if a file is choosen
-        style={{ display: "none" }} // being hidden here
+        style={{ display: "none" }} // being hidden here but functionality remains
         type="file"
         accept=".jpg,.jpeg,.png" // input type file has a default accept attribute to configure accepted file types
       />
