@@ -10,13 +10,14 @@ function ImageUpload(props) {
 
   const imageUploadRef = useRef();
 
-  const avatarImage =
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png";
+  const placeHolderImage =
+    props.demoImage === "userImage"
+      ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460__340.png"
+      : "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png";
 
   function imageUploadChangeHandler(event) {
     // will execute if a file is choosen
     const { files } = event.target; // event from input type file has a files property that includes all the files selected.
-    console.log(files);
     let pickedFile;
     // let fileIsValid = isValid;
     if (files && files.length === 1) {
@@ -33,7 +34,7 @@ function ImageUpload(props) {
 
   console.log(imageFile);
 
-  const {onInput, id} = props;
+  const { onInput, id } = props;
 
   // setting image preview url and setting image file in formState after an image is chosen
   useEffect(() => {
@@ -74,14 +75,13 @@ function ImageUpload(props) {
         }`}
       >
         <div className={classes["image-upload__preview"]}>
-          <img src={previewUrl ? previewUrl : avatarImage} alt="preview" />
+          <img src={previewUrl ? previewUrl : placeHolderImage} alt="preview" />
         </div>
         {!previewUrl && <p>Please select an image.</p>}
         <Button type="button" onClick={pickImageHandler}>
           PICK IMAGE
         </Button>
       </div>
-      {!isValid && <p>{props.errorText}</p>}
     </div>
   );
 }

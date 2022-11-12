@@ -22,7 +22,7 @@ export const useHttpClient = () => {
       return responseData;
     } catch (error) {
       console.log(error);
-      setError(error.message || "Soemthing went wrong, please try again.");
+      setError(error.message || "Something went wrong, please try again.");
       setIsLoading(false);
       throw error;
     }

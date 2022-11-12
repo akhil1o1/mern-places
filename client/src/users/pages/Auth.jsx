@@ -73,11 +73,11 @@ function Auth() {
         formData.append("password", formState.inputs.password.value);
         formData.append("image", formState.inputs.image.value);
 
-        const responseData = await sendRequest(
-          `${API_BASE}/signup`,
-          { method: "POST", body: formData }
-          // fetch api will automatically add headers when working with formData.
-        );
+        const responseData = await sendRequest(`${API_BASE}/signup`, {
+          method: "POST",
+          body: formData,
+        }); // fetch api will automatically add relevant headers when working with formData.
+
         logIn(responseData.createdUser.id);
         navigate("/", { replace: true });
       } catch (error) {} // error will be handled in useHttpClient hook
@@ -133,7 +133,12 @@ function Auth() {
             />
           )}
           {!isLoginMode && (
-            <ImageUpload id="image" center onInput={inputHandler} />
+            <ImageUpload
+              id="image"
+              demoImage="userImage"
+              center
+              onInput={inputHandler}
+            />
           )}
           <Input
             id="email"

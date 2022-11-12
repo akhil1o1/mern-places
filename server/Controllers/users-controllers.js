@@ -19,7 +19,6 @@ export const getUsers = async (req, res, next) => {
 // sign up controller
 export const signup = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log(errors);
   if (!errors.isEmpty()) {
     // to check validation errors from express validators
     return next(
@@ -49,8 +48,7 @@ export const signup = async (req, res, next) => {
     name,
     email,
     password,
-    image:
-      "https://secure.gravatar.com/avatar/4e763eee077f42867e427cd95946d18c?s=110&d=mm&r=g",
+    image: req.file.path, // relative path of the user image file on server
     places: [], //place will get populated with placeIDs of places created by user.
   });
 

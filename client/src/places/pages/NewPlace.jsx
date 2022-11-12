@@ -5,6 +5,7 @@ import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import { VALIDATOR_REQUIRE } from "../../shared/utils/validators";
 import { VALIDATOR_MINLENGTH } from "../../shared/utils/validators";
 import { useForm } from "../../shared/hooks/form-hook";
@@ -27,6 +28,10 @@ function NewPlace() {
         value: "",
         isValid: false,
       },
+      image: {
+        value: null,
+        isValid: false,
+      },
     },
     false
   );
@@ -44,23 +49,19 @@ function NewPlace() {
     event.preventDefault();
     console.log(formState.inputs);
     // post request to add new place
-
     try {
-      await sendRequest(
-        API_BASE,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "Application/json",
-          },
-          body: JSON.stringify({
-            title: formState.inputs.title.value,
-            description: formState.inputs.description.value,
-            address: formState.inputs.address.value,
-            creator: userId,
-          }),
-        }
-      );
+      // FormData browser api allows to send images with text data, images are binary data hence we cant use JSON.stringify() on it.
+      const formData = new FormData();
+      formData.append("title", formState.inputs.title.value);
+      formData.append("address", formState.inputs.address.value);
+      formData.append("description", formState.inputs.description.value);
+      formData.append("creator", userId);
+      formData.append("image", formState.inputs.image.value);
+
+      await sendRequest(API_BASE, {
+        method: "POST",
+        body: formData,
+      }); // fetch api will automatically add relevant headers when working with formData.
 
       navigate(`/${userId}/places`); // navigate to MyPlaces page.
     } catch (error) {} // error will be handled in useHttpClient hook.
@@ -96,6 +97,12 @@ function NewPlace() {
           onInput={inputHandler}
           validators={[VALIDATOR_REQUIRE()]}
           errorText="Please enter a valid address."
+        />
+        <ImageUpload
+          id="image"
+          demoImage="placeImage"
+          center
+          onInput={inputHandler}
         />
         <Input
           id="description"

@@ -11,7 +11,8 @@ function UserItem(props) {
       <Card className={classes["user-item__content"]}>
         <Link to={`/${props.id}/places`}>
           <div className={classes["user-item__image"]}>
-            <Avatar image={props.image} alt={props.name} />
+          {/* image src below will directly fetch image file from the local server, for this to work configure a middleware to handle this route and serve static files on backend. */}
+            <Avatar image={`http://localhost:5000/${props.image}`} alt={props.name} />
           </div>
           <div className={classes["user-item__info"]}>
             <h2>{props.name}</h2>

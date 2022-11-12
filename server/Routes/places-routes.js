@@ -7,6 +7,7 @@ import {
   updatePlace,
   deletePlace,
 } from "../Controllers/places-controllers.js";
+import fileUpload from "../Middleware/file-upload.js";
 
 const router = Router();
 
@@ -16,10 +17,12 @@ router.get("/user/:userId", getPlacesByUserId);
 
 router.post(
   "/",
+  fileUpload.single("image"), // middleware from multer to extract image file and save it to server.
   [
     body("title").trim().not().isEmpty(), // middlewares to validate requests
     body("description").isLength({ min: 5 }),
     body("address").trim().not().isEmpty(),
+    body("creator").trim().not().isEmpty()
   ],
   createPlace
 );

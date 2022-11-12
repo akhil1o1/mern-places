@@ -1,3 +1,4 @@
+import fs from "fs";
 import { validationResult } from "express-validator";
 import mongoose from "mongoose";
 
@@ -73,8 +74,7 @@ export const createPlace = async (req, res, next) => {
     description,
     address,
     creator,
-    image:
-      "https://s3.amazonaws.com/images.skyscrapercenter.com/thumbs/27711_500x650.jpg",
+    image: req.file.path, // relative path of the place image file on server
     location: coordinates,
   });
 
@@ -148,7 +148,9 @@ export const deletePlace = async (req, res, next) => {
   try {
     place = await Place.findById(placeId).populate("creator"); // gives access to user document with id=creator
   } catch (error) {
-    return next(new HttpError("Something went wrong, please try again later.", 500));
+    return next(
+      new HttpError("Something went wrong, please try again later.", 500)
+    );
   }
 
   if (!place) {
@@ -156,6 +158,7 @@ export const deletePlace = async (req, res, next) => {
       new HttpError("Could not find the place for provided id.", 404)
     );
   }
+
 
   try {
     const sess = await mongoose.startSession();
@@ -165,8 +168,14 @@ export const deletePlace = async (req, res, next) => {
     await place.creator.save({ session: sess });
     await sess.commitTransaction();
   } catch (error) {
-    return next(new HttpError("Could not delete the place, please try again later.", 500));
+    return next(
+      new HttpError("Could not delete the place, please try again later.", 500)
+    );
   }
+
+  // place image will be deleted only if place is deleted from DB and corresponding creator/user document in above code.
+  const placeImagePath = place.image; // path of the related placeImage on server
+  fs.unlink(placeImagePath, (error) => console.log(error)); // deleting related placeImage from server
 
   res.status(200).json({ message: "Deleted place successfully." });
 };
