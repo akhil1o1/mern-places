@@ -18,21 +18,24 @@ function ImageUpload(props) {
     const { files } = event.target; // event from input type file has a files property that includes all the files selected.
     console.log(files);
     let pickedFile;
-    let fileIsValid = isValid;
+    // let fileIsValid = isValid;
     if (files && files.length === 1) {
       pickedFile = files[0];
       setImageFile(pickedFile);
       setIsValid(true);
-      fileIsValid = true; // to avoid sending old isValid value to props.onInput;
+      // fileIsValid = true; // to avoid sending old isValid value to props.onInput;
     } else {
       setIsValid(false);
-      fileIsValid = false;
+      // fileIsValid = false;
     }
-    props.onInput(props.id, imageFile, fileIsValid);
+    // props.onInput(props.id, imageFile, fileIsValid);
   }
 
   console.log(imageFile);
 
+  const {onInput, id} = props;
+
+  // setting image preview url and setting image file in formState after an image is chosen
   useEffect(() => {
     if (!imageFile) {
       // if image is undefined
@@ -45,9 +48,11 @@ function ImageUpload(props) {
     };
     fileReader.readAsDataURL(imageFile);
 
+    onInput(id, imageFile, isValid); // updating form state image fields
+
     //file reader alternative
     //  setPreviewUrl(window.URL.createObjectURL(imageFile)); // read mdn docs
-  }, [imageFile]);
+  }, [imageFile, isValid, onInput, id]);
 
   function pickImageHandler() {
     imageUploadRef.current.click(); // to open file uploader when button is clicked.

@@ -48,14 +48,18 @@ function NewPlace() {
     try {
       await sendRequest(
         API_BASE,
-        "POST",
-        { "Content-type": "Application/json" },
-        JSON.stringify({
-          title: formState.inputs.title.value,
-          description: formState.inputs.description.value,
-          address: formState.inputs.address.value,
-          creator: userId,
-        })
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "Application/json",
+          },
+          body: JSON.stringify({
+            title: formState.inputs.title.value,
+            description: formState.inputs.description.value,
+            address: formState.inputs.address.value,
+            creator: userId,
+          }),
+        }
       );
 
       navigate(`/${userId}/places`); // navigate to MyPlaces page.
@@ -69,9 +73,11 @@ function NewPlace() {
   return (
     <>
       <ErrorModal error={error} onClear={clearError} />
-      {isLoading && <div className="center">
+      {isLoading && (
+        <div className="center">
           <LoadingSpinner asOverlay />
-        </div>}
+        </div>
+      )}
       <form className={classes["place-form"]} onSubmit={placeSubmitHandler}>
         <Input
           id="title"

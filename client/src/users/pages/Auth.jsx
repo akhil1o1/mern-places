@@ -41,7 +41,6 @@ function Auth() {
   const { logIn } = authCtx;
 
   const API_BASE = "http://localhost:5000/api/users";
-  // navigate("/", { replace: true }); // redirects to homepage and erases current page from
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
@@ -51,15 +50,14 @@ function Auth() {
     if (isLoginMode) {
       //log in request
       try {
-        const responseData = await sendRequest(
-          `${API_BASE}/login`,
-          "POST",
-          { "Content-type": "Application/json" },
-          JSON.stringify({
+        const responseData = await sendRequest(`${API_BASE}/login`, {
+          method: "POST",
+          headers: { "Content-type": "Application/json" },
+          body: JSON.stringify({
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
-          })
-        );
+          }),
+        });
 
         logIn(responseData.user.id);
         navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
@@ -69,19 +67,19 @@ function Auth() {
       try {
         console.log(formState.inputs);
         // FormData browser api allows to send images with text data, images are binary data hence we cant use JSON.stringify() on it.
-        const formData = new FormData(); 
-        formData.append("name", formState.inputs.name.value);
+        const formData = new FormData();
         formData.append("email", formState.inputs.email.value);
+        formData.append("name", formState.inputs.name.value);
         formData.append("password", formState.inputs.password.value);
         formData.append("image", formState.inputs.image.value);
 
         const responseData = await sendRequest(
           `${API_BASE}/signup`,
-          "POST",
-          formData, // fetch api will automatically add headers when working with formData.
+          { method: "POST", body: formData }
+          // fetch api will automatically add headers when working with formData.
         );
         logIn(responseData.createdUser.id);
-        navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
+        navigate("/", { replace: true });
       } catch (error) {} // error will be handled in useHttpClient hook
     }
   };
@@ -92,7 +90,7 @@ function Auth() {
         {
           ...formState.inputs,
           name: undefined,
-          image: undefined
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -107,7 +105,7 @@ function Auth() {
           image: {
             value: null,
             isValid: false,
-          }
+          },
         },
         false
       );
@@ -122,7 +120,7 @@ function Auth() {
         {isLoading && <LoadingSpinner asOverlay />}
         <h2>Login Required</h2>
         <hr />
-        <form onSubmit={authSubmitHandler} >
+        <form onSubmit={authSubmitHandler}>
           {!isLoginMode && (
             <Input
               id="name"
@@ -134,7 +132,9 @@ function Auth() {
               errorText="Please enter a name."
             />
           )}
-          {!isLoginMode && <ImageUpload id="image" center onInput={inputHandler}/>}
+          {!isLoginMode && (
+            <ImageUpload id="image" center onInput={inputHandler} />
+          )}
           <Input
             id="email"
             element="input"

@@ -76,14 +76,16 @@ function UpdatePlace() {
     try {
       await sendRequest(
         `${API_BASE}/${placeId}`,
-        "PATCH",
-        { "Content-type": "Application/json" },
-        JSON.stringify({
-          title: formState.inputs.title.value,
-          description: formState.inputs.description.value,
-        })
+        {
+          method: "PATCH",
+          headers: { "Content-type": "Application/json" },
+          body: JSON.stringify({
+            title: formState.inputs.title.value,
+            description: formState.inputs.description.value,
+          }),
+        }
       );
-      navigate(`/${userId}/places`); // navigate to MyPlaces page.  
+      navigate(`/${userId}/places`); // navigate to MyPlaces page.
     } catch (error) {}
   };
 

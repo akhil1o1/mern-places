@@ -29,7 +29,3 @@ export const getCoordinates = async (address) => {
 
   return coordinates;
 };
-
-// getCoordinates(
-//   "Sardar Sarovar Dam, RPQ9+5MJ Sardar Sarovar Dam, Statue of Unity Rd, Kevadia, Gujarat 393155"
-// ).then((coords) => console.log(coords));

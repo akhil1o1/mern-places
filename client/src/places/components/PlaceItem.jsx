@@ -40,7 +40,7 @@ function PlaceItem(props) {
     setShowConfirmModal(false);
     // deleting place
     try {
-      await sendRequest(`${API_BASE}/${props.id}`, "DELETE");
+      await sendRequest(`${API_BASE}/${props.id}`, {method : "DELETE"});
       props.onDeletingPlaceHandler(props.id); // to update placesByUser in userPlaces.
     } catch (error) {} // error being handled in UseHttpClient hook.
   };
