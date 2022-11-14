@@ -93,7 +93,7 @@ export const createPlace = async (req, res, next) => {
   }
 
   console.log(user);
-  // unlike regular save operation, transactions don,t create collection. create collection manually in mongoDB atlas if it doesn't exist already.
+  // unlike regular save operation, transactions don't create collection. create collection manually in mongoDB atlas if it doesn't exist already.
   let createdPlace;
   try {
     // starting session and performing transactions / unrelated operations

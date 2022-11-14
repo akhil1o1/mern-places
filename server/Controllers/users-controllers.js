@@ -1,4 +1,9 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import { validationResult } from "express-validator";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { trusted } from "mongoose";
 
 import HttpError from "../Models/http-error.js";
 import User from "../Models/user-model.js";
@@ -34,20 +39,30 @@ export const signup = async (req, res, next) => {
     userAlreadyExists = await User.findOne({ email: email });
   } catch (error) {
     return next(
-      new HttpError("Signing up failed. please try again later.", 500)
+      new HttpError("Signing up failed, please try again later.", 500)
     );
   }
 
   if (userAlreadyExists) {
     return next(
-      new HttpError("User already exists. Please login instead.", 422)
+      new HttpError("User already exists, Please login instead.", 422)
+    );
+  }
+
+  let hashedPassword;
+  try {
+    // hashing and salting password, 6 => 6 rounds of salting
+    hashedPassword = await bcrypt.hash(password, 6);
+  } catch (error) {
+    return next(
+      new HttpError("Signing up failed, please try again later.", 500)
     );
   }
 
   const newUser = new User({
     name,
     email,
-    password,
+    password: hashedPassword,
     image: req.file.path, // relative path of the user image file on server
     places: [], //place will get populated with placeIDs of places created by user.
   });
@@ -61,7 +76,23 @@ export const signup = async (req, res, next) => {
     );
   }
 
-  res.status(201).json({ createdUser: createdUser.toObject({getters : true}) });
+  let token;
+  try {
+    //creating jwt token
+    token = jwt.sign(
+      { userId: createdUser.id, email: createdUser.email }, // data to be encoded in token
+      process.env.JWT_TOKEN_KEY, // secret string/key
+      { expiresIn: "1h" } // token expiration time
+    );
+  } catch (error) {
+    return next(
+      new HttpError("Signing up failed. Please try again later.", 500)
+    );
+  }
+
+  res
+    .status(201)
+    .json({ userId: createdUser.id, email: createdUser.email, token });
 };
 
 //login controller
@@ -72,21 +103,42 @@ export const login = async (req, res, next) => {
   try {
     matchedUser = await User.findOne({ email: email });
   } catch (error) {
-    return next(new HttpError("Login failed. please try again later.", 500));
+    return next(new HttpError("Login failed, please try again later.", 500));
   }
 
   if (!matchedUser) {
     return next(
-      new HttpError("Email does not exist. Please sign up instead.", 401)
+      new HttpError("Email does not exist, please sign up instead.", 401)
     );
   }
 
-  if (matchedUser.password !== password) {
-    return next(new HttpError("Wrong password.", 401));
+  let isValidPassword;
+  try {
+    // comparing entered password to hashed password in db.
+    isValidPassword = await bcrypt.compare(password, matchedUser.password); // returns a boolean
+  } catch (error) {
+    return next(new HttpError("Login failed, please try again later.", 500));
   }
 
-  res.json({
-    message: "Logged in",
-    user: matchedUser.toObject({ getters: true }),
-  });
+  if (!isValidPassword) {
+    return next(
+      new HttpError(
+        "Wrong password, please check your password and try again.",
+        401
+      )
+    );
+  }
+
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: matchedUser.id, email: matchedUser.email },
+      process.env.JWT_TOKEN_KEY,
+      { expiresIn: "1h" }
+    );
+  } catch (error) {
+    return next(new HttpError("Login failed, please try again later", 500));
+  }
+
+  res.json({ userId: matchedUser.id, email: matchedUser.email, token });
 };
