@@ -59,7 +59,7 @@ function Auth() {
           }),
         });
 
-        logIn(responseData.user.id);
+        logIn(responseData.userId, responseData.token); // jwt token for auth
         navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
       } catch (error) {} // error will be handled in useHttpClient hook
     } else {
@@ -78,7 +78,7 @@ function Auth() {
           body: formData,
         }); // fetch api will automatically add relevant headers when working with formData.
 
-        logIn(responseData.createdUser.id);
+        logIn(responseData.userId, responseData.token); // jwt token for auth
         navigate("/", { replace: true });
       } catch (error) {} // error will be handled in useHttpClient hook
     }

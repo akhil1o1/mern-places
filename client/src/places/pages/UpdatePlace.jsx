@@ -36,7 +36,7 @@ function UpdatePlace() {
   console.log(placeId);
 
   const authCtx = useContext(AuthContext);
-  const { isLoggedIn, userId } = authCtx;
+  const { isLoggedIn, userId, token } = authCtx;
 
   const navigate = useNavigate();
 
@@ -78,7 +78,10 @@ function UpdatePlace() {
         `${API_BASE}/${placeId}`,
         {
           method: "PATCH",
-          headers: { "Content-type": "Application/json" },
+          headers: { 
+            "Content-type": "Application/json",
+            authorization: `Bearer ${token}` // a convention
+          },
           body: JSON.stringify({
             title: formState.inputs.title.value,
             description: formState.inputs.description.value,

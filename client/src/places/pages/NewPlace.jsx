@@ -41,7 +41,7 @@ function NewPlace() {
   const navigate = useNavigate(); //react router hook to redirect programmatically
 
   const authCtx = useContext(AuthContext);
-  const { isLoggedIn, userId } = authCtx;
+  const { isLoggedIn, userId, token } = authCtx;
 
   const API_BASE = "http://localhost:5000/api/places/";
 
@@ -60,6 +60,9 @@ function NewPlace() {
 
       await sendRequest(API_BASE, {
         method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`, // "Bearer token" => just a convention
+        },
         body: formData,
       }); // fetch api will automatically add relevant headers when working with formData.
 

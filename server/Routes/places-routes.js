@@ -8,12 +8,15 @@ import {
   deletePlace,
 } from "../Controllers/places-controllers.js";
 import fileUpload from "../Middleware/file-upload.js";
+import checkAuth from "../Middleware/check-auth.js";
 
 const router = Router();
 
 router.get("/:placeId", getPlaceByPlaceId);
 
 router.get("/user/:userId", getPlacesByUserId);
+
+router.use(checkAuth); // middleware to check authentication and protect subsequent routes.
 
 router.post(
   "/",

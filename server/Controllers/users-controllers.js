@@ -18,7 +18,7 @@ export const getUsers = async (req, res, next) => {
     );
   }
 
-  res.json({ users: users.map((user) => user.toObject({ getters: true })) }); // will add a id field along with _id before sending the response.
+  res.json({ users: users.map((user) => user.toObject({ getters: true })) }); // will add an id field along with _id before sending the response.
 };
 
 // sign up controller
@@ -92,7 +92,7 @@ export const signup = async (req, res, next) => {
 
   res
     .status(201)
-    .json({ userId: createdUser.id, email: createdUser.email, token });
+    .json({ userId: createdUser.id, email: createdUser.email, token }); // sending token along with other data.
 };
 
 //login controller

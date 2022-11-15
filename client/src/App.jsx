@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Users from "./users/pages/Users";
 import UserPlaces from "./places/pages/UserPlaces";
@@ -16,22 +12,25 @@ import { AuthContext } from "./shared/context/auth-context";
 import "./App.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(false);
   const [userId, setUserId] = useState(null);
-  console.log(isLoggedIn);
 
-  function logIn(uid) {
-    setIsLoggedIn(true);
+  console.log(token);
+
+  function logIn(uid, token) {
     setUserId(uid);
+    setToken(token);
   }
 
   function logOut() {
-    setIsLoggedIn(false);
+    setToken(null);
     setUserId(null);
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, logIn, logOut, userId }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn: !!token, token, logIn, logOut, userId }} // !!token => token is undefined/null means false and token is defined means true
+    >
       <Router>
         <MainNavigation />
         <main>

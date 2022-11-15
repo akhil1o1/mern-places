@@ -16,7 +16,7 @@ function PlaceItem(props) {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const authCtx = useContext(AuthContext);
-  const { userId } = authCtx;
+  const { userId, token } = authCtx;
 
   function openMapHandler() {
     setShowMap(true);
@@ -40,14 +40,19 @@ function PlaceItem(props) {
     setShowConfirmModal(false);
     // deleting place
     try {
-      await sendRequest(`${API_BASE}/${props.id}`, {method : "DELETE"});
+      await sendRequest(`${API_BASE}/${props.id}`, {
+        method: "DELETE",
+        headers: { 
+          authorization : `Bearer ${token}` // a convention  
+        },
+      });
       props.onDeletingPlaceHandler(props.id); // to update placesByUser in userPlaces.
     } catch (error) {} // error being handled in UseHttpClient hook.
   };
 
   return (
     <>
-    <ErrorModal error={error} onClear={clearError}/>
+      <ErrorModal error={error} onClear={clearError} />
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -84,10 +89,13 @@ function PlaceItem(props) {
       </Modal>
       <li className={classes["place-item"]}>
         <Card className={classes["place-item__content"]}>
-        {isLoading && <LoadingSpinner asOverlay/>}
+          {isLoading && <LoadingSpinner asOverlay />}
           <div className={classes["place-item__image"]}>
-           {/* image src below will directly fetch image file from the local server, for this to work configure a middleware to handle this route and serve static files on backend. */}
-            <img src={`http://localhost:5000/${props.image}`} alt={props.title} />
+            {/* image src below will directly fetch image file from the local server, for this to work configure a middleware to handle this route and serve static files on backend. */}
+            <img
+              src={`http://localhost:5000/${props.image}`}
+              alt={props.title}
+            />
           </div>
           <div className={classes["place-item__info"]}>
             <h2>{props.title}</h2>
