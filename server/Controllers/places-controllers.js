@@ -125,13 +125,40 @@ export const updatePlace = async (req, res, next) => {
 
   const { title, description } = req.body;
 
+  let placeToBeUpdated;
+  try {
+    placeToBeUpdated = await Place.findById(placeId);
+  } catch (error) {
+    return next(
+      new HttpError("Could not update the place, please try again later.", 500)
+    );
+  }
+
+  if (!placeToBeUpdated) {
+    return next(
+      new HttpError("Could not find the place for provided place id.", 404)
+    );
+  }
+
+  // checking if the creator of the place is same as the user currently logged in. thus making sure a user can delete the place only if it was created by him.
+  // userId added to request by checkAuth middleware after extracting it from authorization header token.
+  // creator is of mongoose type objectId so needs to be converted to string to compare with userId
+  if (placeToBeUpdated.creator.toString() !== req.userId) {
+    return next(
+      new HttpError(
+        "Authentication failed!!! you are not allowed to edit place.",
+        401
+      )
+    );
+  }
+
+  // updating place with new data.
+  placeToBeUpdated.title = title;
+  placeToBeUpdated.description = description;
+
   let updatedPlace;
   try {
-    updatedPlace = await Place.findByIdAndUpdate(
-      placeId,
-      { $set: { title: title, description: description } },
-      { returnDocument: "after" }
-    );
+    updatedPlace = await placeToBeUpdated.save();
   } catch (error) {
     return next(
       new HttpError("Could not update the place, please try again later.", 500)
@@ -155,10 +182,20 @@ export const deletePlace = async (req, res, next) => {
 
   if (!place) {
     return next(
-      new HttpError("Could not find the place for provided id.", 404)
+      new HttpError("Could not find the place for provided place id.", 404)
     );
   }
 
+  // place.creator will be populated with the entire creator/user document with id(string) along with _id(objectId) field. 
+  //so place.creator.toString() !== req.userId comparison wont work thus comparing the id of the creator/user document with userId
+  if (place.creator.id !== req.userId) {
+    return next(
+      new HttpError(
+        "Authentication failed!!! you are not allowed to delete this place.",
+        401
+      )
+    );
+  }
 
   try {
     const sess = await mongoose.startSession();
@@ -173,7 +210,7 @@ export const deletePlace = async (req, res, next) => {
     );
   }
 
-  // place image will be deleted only if place is deleted from DB and corresponding creator/user document in above code.
+  // place image will be deleted only if place is deleted from DB and corresponding creator/user document's places array in above code.
   const placeImagePath = place.image; // path of the related placeImage on server
   fs.unlink(placeImagePath, (error) => console.log(error)); // deleting related placeImage from server
 

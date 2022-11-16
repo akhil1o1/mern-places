@@ -29,7 +29,7 @@ function App() {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: !!token, token, logIn, logOut, userId }} // !!token => token is undefined/null means false and token is defined means true
+      value={{ isLoggedIn: !!token, token, logIn, logOut, userId }} // !!token => if token is undefined/null evaluates to false and else if token is defined evaluates to true
     >
       <Router>
         <MainNavigation />

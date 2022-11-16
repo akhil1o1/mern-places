@@ -16,7 +16,7 @@ const checkAuth = (req, res, next) => {
       throw new Error(); // error will be handled in catch block.
     }
 
-    const decodedToken = jwt.verify(token, process.env.JWT_TOKEN_KEY); // returns the data(string/object) encoded in token in signup/login controllers.
+    const decodedToken = jwt.verify(token, process.env.JWT_TOKEN_KEY); //veifies if the token recieved is valid and returns the data(string/object) encoded in token in signup/login controllers.
     req.userId = decodedToken.userId; // adding decodedUserId to request to be used in subsequent routes/controllers
     next(); // forwarding req to subsequent routes
   } catch (error) {

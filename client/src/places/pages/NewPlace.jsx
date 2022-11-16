@@ -61,6 +61,7 @@ function NewPlace() {
       await sendRequest(API_BASE, {
         method: "POST",
         headers: {
+          // adding authorization header with token recieved on signup/login to make request to protected routes on backend
           authorization: `Bearer ${token}`, // "Bearer token" => just a convention
         },
         body: formData,
