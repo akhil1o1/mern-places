@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Users from "./users/pages/Users";
@@ -9,23 +9,12 @@ import NotFound from "./shared/Pages/NotFound";
 import UpdatePlace from "./places/pages/UpdatePlace";
 import Auth from "./users/pages/Auth";
 import { AuthContext } from "./shared/context/auth-context";
+import { useAuth } from "./shared/hooks/auth-hook";
 import "./App.css";
 
+
 function App() {
-  const [token, setToken] = useState(false);
-  const [userId, setUserId] = useState(null);
-
-  console.log(token);
-
-  function logIn(uid, token) {
-    setUserId(uid);
-    setToken(token);
-  }
-
-  function logOut() {
-    setToken(null);
-    setUserId(null);
-  }
+  const {token, logIn, logOut, userId} = useAuth();
 
   return (
     <AuthContext.Provider

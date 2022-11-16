@@ -140,7 +140,7 @@ export const updatePlace = async (req, res, next) => {
     );
   }
 
-  // checking if the creator of the place is same as the user currently logged in. thus making sure a user can delete the place only if it was created by him.
+  // checking below if the creator of the place is same as the user currently logged in. thus making sure a user can delete the place only if it was created by him.
   // userId added to request by checkAuth middleware after extracting it from authorization header token.
   // creator is of mongoose type objectId so needs to be converted to string to compare with userId
   if (placeToBeUpdated.creator.toString() !== req.userId) {
