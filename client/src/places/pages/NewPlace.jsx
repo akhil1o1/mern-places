@@ -43,7 +43,7 @@ function NewPlace() {
   const authCtx = useContext(AuthContext);
   const { isLoggedIn, userId, token } = authCtx;
 
-  const API_BASE = "http://localhost:5000/api/places/";
+  const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/places/`;
 
   const placeSubmitHandler = async (event) => {
     event.preventDefault();
@@ -58,7 +58,7 @@ function NewPlace() {
       formData.append("creator", userId);
       formData.append("image", formState.inputs.image.value);
 
-      await sendRequest(API_BASE, {
+      await sendRequest(requestUrl, {
         method: "POST",
         headers: {
           // adding authorization header with token recieved on signup/login to make request to protected routes on backend

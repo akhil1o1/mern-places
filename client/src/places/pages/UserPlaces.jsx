@@ -13,19 +13,19 @@ function UserPlaces() {
   const { userId } = useParams();
   console.log(userId);
 
-  const API_BASE = "http://localhost:5000/api/places";
+  const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/places/user/${userId}`;
 
   useEffect(() => {
     //fetching places uploaded by user.
     const fetchPlaces = async () => {
       try {
-        const responseData = await sendRequest(`${API_BASE}/user/${userId}`);
+        const responseData = await sendRequest(requestUrl);
         setPlacesByUser(responseData.places);
       } catch (error) {}
     };
 
     fetchPlaces();
-  }, [sendRequest, userId]);
+  }, [sendRequest, userId, requestUrl]);
 
   function onDeletingPlaceHandler(deletedPlaceId) {
     // to update placesByUser when a place get deleted

@@ -42,13 +42,13 @@ function UpdatePlace() {
 
   console.log(formState.inputs.description.value);
 
-  const API_BASE = "http://localhost:5000/api/places";
+  const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/places/${placeId}`;
 
   useEffect(() => {
     //fetching data about the place being updated.
     const fetchPlaceData = async () => {
       try {
-        const responseData = await sendRequest(`${API_BASE}/${placeId}`);
+        const responseData = await sendRequest(requestUrl);
         setPlaceBeingUpdated(responseData.place);
         setFormData(
           {
@@ -66,7 +66,7 @@ function UpdatePlace() {
       } catch (error) {} // error being handled in useHttpClient hook.
     };
     fetchPlaceData();
-  }, [placeId, sendRequest, setFormData]);
+  }, [placeId, sendRequest, setFormData, requestUrl]);
 
   const updatePlaceSubmitHandler = async (event) => {
     event.preventDefault();
@@ -75,7 +75,7 @@ function UpdatePlace() {
     // posting updated place data
     try {
       await sendRequest(
-        `${API_BASE}/${placeId}`,
+        requestUrl,
         {
           method: "PATCH",
           headers: { 

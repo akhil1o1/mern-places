@@ -40,7 +40,7 @@ function Auth() {
   const authCtx = useContext(AuthContext);
   const { logIn } = authCtx;
 
-  const API_BASE = "http://localhost:5000/api/users";
+  const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/users`;
 
   const authSubmitHandler = async (event) => {
     event.preventDefault();
@@ -50,7 +50,7 @@ function Auth() {
     if (isLoginMode) {
       //log in request
       try {
-        const responseData = await sendRequest(`${API_BASE}/login`, {
+        const responseData = await sendRequest(`${requestUrl}/login`, {
           method: "POST",
           headers: { "Content-type": "Application/json" },
           body: JSON.stringify({
@@ -73,7 +73,7 @@ function Auth() {
         formData.append("password", formState.inputs.password.value);
         formData.append("image", formState.inputs.image.value);
 
-        const responseData = await sendRequest(`${API_BASE}/signup`, {
+        const responseData = await sendRequest(`${requestUrl}/signup`, {
           method: "POST",
           body: formData,
         }); // fetch api will automatically add relevant headers when working with formData.

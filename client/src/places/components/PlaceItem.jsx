@@ -34,13 +34,13 @@ function PlaceItem(props) {
     setShowConfirmModal(false);
   }
 
-  const API_BASE = "http://localhost:5000/api/places";
+  const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/places/${props.id}`;
 
   const deleteHandler = async () => {
     setShowConfirmModal(false);
     // deleting place
     try {
-      await sendRequest(`${API_BASE}/${props.id}`, {
+      await sendRequest(requestUrl, {
         method: "DELETE",
         headers: { 
           authorization : `Bearer ${token}` // a convention  
@@ -93,7 +93,7 @@ function PlaceItem(props) {
           <div className={classes["place-item__image"]}>
             {/* image src below will directly fetch image file from the local server, for this to work configure a middleware to handle this route and serve static files on backend. */}
             <img
-              src={`http://localhost:5000/${props.image}`}
+              src={`${process.env.REACT_APP_IMAGE_URL}/${props.image}`}
               alt={props.title}
             />
           </div>

@@ -9,13 +9,14 @@ function Users() {
   const [users, setUsers] = useState([]);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  const API_BASE = "http://localhost:5000/api/users/";
+ 
 
   useEffect(() => {
+    const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/users/`;
     // fetching users
     const fetchUsers = async () => {
       try {
-        const responseData = await sendRequest(API_BASE);
+        const responseData = await sendRequest(requestUrl);
         setUsers(responseData.users);
       } catch (error) {} // error will be handled in useHttpClient hook.
     };
