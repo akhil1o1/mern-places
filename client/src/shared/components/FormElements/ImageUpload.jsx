@@ -32,8 +32,6 @@ function ImageUpload(props) {
     // props.onInput(props.id, imageFile, fileIsValid);
   }
 
-  console.log(imageFile);
-
   const { onInput, id } = props;
 
   // setting image preview url and setting image file in formState after an image is chosen

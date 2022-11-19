@@ -47,7 +47,6 @@ function NewPlace() {
 
   const placeSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
     // post request to add new place
     try {
       // FormData browser api allows to send images with text data, images are binary data hence we cant use JSON.stringify() on it.

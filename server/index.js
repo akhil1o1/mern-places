@@ -42,7 +42,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.MONGODB_URI_LOCAL)
   .then(() => {
     app.listen(process.env.PORT);
     console.log(

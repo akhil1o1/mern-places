@@ -33,14 +33,11 @@ function UpdatePlace() {
   );
 
   const { placeId } = useParams();
-  console.log(placeId);
 
   const authCtx = useContext(AuthContext);
   const { isLoggedIn, userId, token } = authCtx;
 
   const navigate = useNavigate();
-
-  console.log(formState.inputs.description.value);
 
   const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/places/${placeId}`;
 
@@ -69,8 +66,7 @@ function UpdatePlace() {
   }, [placeId, sendRequest, setFormData, requestUrl]);
 
   const updatePlaceSubmitHandler = async (event) => {
-    event.preventDefault();
-    console.log(formState.inputs);
+    event.preventDefault()
 
     // posting updated place data
     try {

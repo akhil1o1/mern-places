@@ -45,8 +45,6 @@ function Auth() {
   const authSubmitHandler = async (event) => {
     event.preventDefault();
 
-    console.log(formState.inputs);
-
     if (isLoginMode) {
       //log in request
       try {
@@ -65,7 +63,6 @@ function Auth() {
     } else {
       //sign up request.
       try {
-        console.log(formState.inputs);
         // FormData browser api allows to send images with text data, images are binary data hence we cant use JSON.stringify() on it.
         const formData = new FormData();
         formData.append("email", formState.inputs.email.value);

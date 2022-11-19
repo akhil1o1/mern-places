@@ -11,7 +11,6 @@ function UserPlaces() {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const { userId } = useParams();
-  console.log(userId);
 
   const requestUrl = `${process.env.REACT_APP_BACKEND_URL}/places/user/${userId}`;
 
