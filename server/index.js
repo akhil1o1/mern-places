@@ -13,7 +13,7 @@ import userRoutes from "./Routes/users-routes.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
-// app.use(express.urlencoded({extended: true})); // needed to handle form data other wise not required
+
 
 // middleware to handle request and serve static files/images.
 app.use("/uploads/images", express.static(path.join("uploads", "images")));
