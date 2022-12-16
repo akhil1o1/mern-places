@@ -10,7 +10,7 @@ router.get("/", getUsers);
 
 router.post(
   "/signup",
-  fileUpload.single("image"), // middleware from multer to extract image file and save it server.
+  fileUpload.single("image"), // middleware from multer to extract image file and save it to server it also add file/files object to the request.
   [
     body("name").trim().not().isEmpty(),
     body("email").trim().normalizeEmail().isEmail(), // normalize email => Test@test.com => test@test.com

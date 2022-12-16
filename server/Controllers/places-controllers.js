@@ -98,7 +98,7 @@ export const createPlace = async (req, res, next) => {
   try {
     // starting session and performing transactions / unrelated operations
     const sess = await mongoose.startSession();
-    sess.startTransaction(); //starting session.
+    sess.startTransaction(); //starting transactions.
     createdPlace = await newPlace.save({ session: sess }); //making this operation part of the session
 
     user.places.push(createdPlace); // it will not add the createdPlace doc but only the id to the places array. its a mongoDB feature.

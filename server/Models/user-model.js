@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  places: [{ type: mongoose.Types.ObjectId, required: true, ref: "Place" }], //an array of documents. with every document having a type of mongoose id. Making relation to Place model 
+  places: [{ type: mongoose.Types.ObjectId, required: true, ref: "Place" }], //an array of documents. with every document having a type of mongoose ObjectId(id of the related place document). Making relation to Place model 
 });
 
 userSchema.plugin(uniqueValidator); /// to validate emails and prevent email duplication for users

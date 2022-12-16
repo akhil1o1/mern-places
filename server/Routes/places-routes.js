@@ -20,7 +20,7 @@ router.use(checkAuth); // middleware to check authentication and protect subsequ
 
 router.post(
   "/",
-  fileUpload.single("image"), // middleware from multer to extract image file and save it to server.
+  fileUpload.single("image"), // middleware from multer to extract image file and save it to server it also add file/files object to the request.
   [
     body("title").trim().not().isEmpty(), // middlewares to validate requests
     body("description").isLength({ min: 5 }),
