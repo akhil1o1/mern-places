@@ -1,13 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// import { useAuth } from "../shared/hooks/auth-hook";
-
-// isLoggedIn: false,
-//     token: null,
-//     userId: null,
-//     logIn : () => {},
-//     logOut : () => {}
-
 const initialState = {
    isLoggedIn: false,
    userId: null,
@@ -19,12 +11,12 @@ const authSlice = createSlice({
    name: "authentication",
    initialState: initialState,
    reducers: {
-      login(state, action) {
-         state.isLoggedIn = true;
+      logIn(state, action) {
          state.token = action.payload.token;
          state.userId = action.payload.uid;
+         state.isLoggedIn = true;
 
-         const expirationDate = action.payload.expirationDate;
+         const expirationDate = action.payload?.expirationDate || null;
          // generating tokenExpiryDateStamp which will be current timestamp + 1 hour.
          const tokenExpiryDateStamp =
             expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
@@ -41,11 +33,10 @@ const authSlice = createSlice({
             }) // date.toISOString => converts a date into string
          );
       },
-      logout(state, action) {
-         state.isLoggedIn = false;
+      logOut(state, action) {
          state.token = null;
          state.tokenExpirationDate = null;
-
+         state.isLoggedIn = false;
          localStorage.removeItem("userData"); // clearing localstorage if user logs out
       },
    },
