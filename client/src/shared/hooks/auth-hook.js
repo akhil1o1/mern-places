@@ -11,7 +11,7 @@ export const useAuth = () => {
     setUserId(uid);
     setToken(token);
 
-    // genrating tokenExpiryDateStamp which will be current timestamp + 1 hour.
+    // generating tokenExpiryDateStamp which will be current timestamp + 1 hour.
     const tokenExpiryDateStamp =
       expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
     setTokenExpirationDate(tokenExpiryDateStamp);
