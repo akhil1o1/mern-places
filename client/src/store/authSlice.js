@@ -37,6 +37,7 @@ const authSlice = createSlice({
          state.token = null;
          state.tokenExpirationDate = null;
          state.isLoggedIn = false;
+         state.userId = null
          localStorage.removeItem("userData"); // clearing localstorage if user logs out
       },
    },

@@ -1,58 +1,58 @@
 import { useCallback, useReducer } from "react";
 
 const formReducer = (state, action) => {
-  let formIsValid = true;
-  if (action.type === "INPUT_CHANGE") {
-    for (const inputId in state.inputs) {
-      if(!state.inputs[inputId]) {
-        continue;
+   let formIsValid = true;
+   if (action.type === "INPUT_CHANGE") {
+      for (const inputId in state.inputs) {
+         if (!state.inputs[inputId]) {
+            continue;
+         }
+         if (inputId === action.inputId) {
+            formIsValid = formIsValid && action.isValid;
+         } else {
+            formIsValid = formIsValid && state.inputs[inputId].isValid;
+         }
       }
-      if (inputId === action.inputId) {
-        formIsValid = formIsValid && action.isValid;
-      } else {
-        formIsValid = formIsValid && state.inputs[inputId].isValid;
-      }
-    }
-    return {
-      ...state,
-      inputs: {
-        ...state.inputs,
-        [action.inputId]: { value: action.value, isValid: action.isValid },
-      },
-      isValid: formIsValid,
-    };
-  } else if (action.type === "SET_DATA") {
-    return {
-      inputs: action.inputs,
-      isValid: action.formIsValid,
-    };
-  } else {
-    return state;
-  }
+      return {
+         ...state,
+         inputs: {
+            ...state.inputs,
+            [action.inputId]: { value: action.value, isValid: action.isValid },
+         },
+         isValid: formIsValid,
+      };
+   } else if (action.type === "SET_DATA") {
+      return {
+         inputs: action.inputs,
+         isValid: action.formIsValid,
+      };
+   } else {
+      return state;
+   }
 };
 
 export function useForm(initialInputs, initialFormValidity) {
-  const [formState, dispatch] = useReducer(formReducer, {
-    inputs: initialInputs,
-    isValid: initialFormValidity,
-  });
+   const [formState, dispatch] = useReducer(formReducer, {
+      inputs: initialInputs,
+      isValid: initialFormValidity,
+   });
 
-  const inputHandler = useCallback((id, value, isValid) => {
-    dispatch({
-      type: "INPUT_CHANGE",
-      value: value,
-      isValid: isValid,
-      inputId: id,
-    });
-  }, []);
+   const inputHandler = useCallback((id, value, isValid) => {
+      dispatch({
+         type: "INPUT_CHANGE",
+         value: value,
+         isValid: isValid,
+         inputId: id,
+      });
+   }, []);
 
-  const setFormData = useCallback((inputData, formValidity) => {
-    dispatch({
-      type: "SET_DATA",
-      inputs: inputData,
-      formIsValid: formValidity,
-    });
-  }, []);
+   const setFormData = useCallback((inputData, formValidity) => {
+      dispatch({
+         type: "SET_DATA",
+         inputs: inputData,
+         formIsValid: formValidity,
+      });
+   }, []);
 
-  return [formState, inputHandler, setFormData];
+   return [formState, inputHandler, setFormData];
 }

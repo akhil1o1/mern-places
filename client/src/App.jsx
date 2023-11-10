@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import {useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import Users from "./users/pages/Users";
 import UserPlaces from "./places/pages/UserPlaces";
@@ -15,10 +15,12 @@ import "./App.css";
 let logOutTimer;
 
 function App() {
-    const {token, tokenExpirationDate} = useSelector((state) => {
+   const authState = useSelector((state) => {
       console.log(state);
       return state;
-    })
+   });
+   const { token, tokenExpirationDate } = authState;
+   
    const dispatch = useDispatch();
    const { logIn, logOut } = authActions;
 
@@ -35,34 +37,35 @@ function App() {
                token: storedUserData.token,
                expirationDate: new Date(storedUserData.expiration),
             })
-         );// logging in user automatically
+         ); // logging in user automatically
       }
    }, [logIn, dispatch]);
 
    useEffect(() => {
-    if (token && tokenExpirationDate) {
-      const remainingTime =
-        tokenExpirationDate.getTime() - new Date().getTime(); // remaining time for token expiration in milli seconds
-      logOutTimer = setTimeout(dispatch(logOut()), remainingTime);
-    } else {
-      clearTimeout(logOutTimer);
-    }
-  }, [token, tokenExpirationDate, dispatch, logOut]);
+      if (token && tokenExpirationDate) {
+         const remainingTime =
+            tokenExpirationDate.getTime() - new Date().getTime(); // remaining time for token expiration in milli seconds
+         console.log("remainingTime", remainingTime);
+         logOutTimer = setTimeout(dispatch(logOut()), remainingTime);
+      } else {
+         clearTimeout(logOutTimer);
+      }
+   }, [token, tokenExpirationDate, dispatch, logOut]);
 
    return (
-         <Router>
-            <MainNavigation />
-            <main>
-               <Routes>
-                  <Route path="/" element={<Users />} />
-                  <Route path="/places/new" element={<NewPlace />} />
-                  <Route path="/:userId/places" element={<UserPlaces />} />
-                  <Route path="/places/:placeId" element={<UpdatePlace />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="*" element={<NotFound />} />
-               </Routes>
-            </main>
-         </Router>
+      <Router>
+         <MainNavigation />
+         <main>
+            <Routes>
+               <Route path="/" element={<Users />} />
+               <Route path="/places/new" element={<NewPlace />} />
+               <Route path="/:userId/places" element={<UserPlaces />} />
+               <Route path="/places/:placeId" element={<UpdatePlace />} />
+               <Route path="/auth" element={<Auth />} />
+               <Route path="*" element={<NotFound />} />
+            </Routes>
+         </main>
+      </Router>
    );
 }
 
