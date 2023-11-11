@@ -16,6 +16,7 @@ const authSlice = createSlice({
          state.userId = action.payload.uid;
          state.isLoggedIn = true;
 
+         console.log("inside logIn", state);
          const expirationDate = action.payload?.expirationDate || null;
          // generating tokenExpiryDateStamp which will be current timestamp + 1 hour.
          const tokenExpiryDateStamp =
@@ -37,7 +38,8 @@ const authSlice = createSlice({
          state.token = null;
          state.tokenExpirationDate = null;
          state.isLoggedIn = false;
-         state.userId = null
+         state.userId = null;
+         console.log("inside logOut", state);
          localStorage.removeItem("userData"); // clearing localstorage if user logs out
       },
    },

@@ -15,9 +15,12 @@ import "./App.css";
 let logOutTimer;
 
 function App() {
-   const token = useSelector(state => state.token);
-   const tokenExpirationDate = useSelector(state => state.tokenExpirationDate);
-   
+   const token = useSelector((state) => state.token);
+   const tokenExpirationDate = useSelector(
+      (state) => state.tokenExpirationDate
+   );
+   console.table({ token, tokenExpirationDate });
+
    const dispatch = useDispatch();
    const { logIn, logOut } = authActions;
 
@@ -43,7 +46,7 @@ function App() {
          const remainingTime =
             tokenExpirationDate.getTime() - new Date().getTime(); // remaining time for token expiration in milli seconds
          console.log("remainingTime", remainingTime);
-         logOutTimer = setTimeout(dispatch(logOut()), remainingTime);
+         logOutTimer = setTimeout(() => dispatch(logOut()), remainingTime);
       } else {
          clearTimeout(logOutTimer);
       }
