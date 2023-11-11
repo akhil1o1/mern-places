@@ -13,10 +13,9 @@ import classes from "./PlaceItem.module.css";
 function PlaceItem(props) {
    const [showMap, setShowMap] = useState(false);
    const [showConfirmModal, setShowConfirmModal] = useState(false);
-   const { userId, token } = useSelector((state) => {
-      console.log(state);
-      return state;
-   });
+
+   const userId = useSelector(state => state.userId);
+   const token = useSelector(state => state.token);
 
    const { isLoading, error, sendRequest, clearError } = useHttpClient();
 

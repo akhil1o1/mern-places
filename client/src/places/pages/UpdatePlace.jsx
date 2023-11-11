@@ -16,10 +16,10 @@ import classes from "./UpdatePlace.module.css";
 
 function UpdatePlace() {
    const [placeBeingUpdated, setPlaceBeingUpdated] = useState();
-   const { isLoggedIn, userId, token } = useSelector((state) => {
-      console.log(state);
-      return state;
-   });
+   const isLoggedIn = useSelector(state => state.isLoggedIn);
+   const userId = useSelector(state => state.userId);
+   const token = useSelector(state => state.token);
+   
    const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
    const [formState, inputHandler, setFormData] = useForm(

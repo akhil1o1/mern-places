@@ -14,10 +14,10 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import classes from "./NewPlace.module.css";
 
 function NewPlace() {
-   const { isLoggedIn, userId, token } = useSelector((state) => {
-      console.log(state);
-      return state;
-   });
+   const isLoggedIn = useSelector(state => state.isLoggedIn);
+   const userId = useSelector(state => state.userId);
+   const token = useSelector(state => state.token);
+
    const [formState, inputHandler] = useForm(
       {
          title: {

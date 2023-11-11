@@ -15,11 +15,8 @@ import "./App.css";
 let logOutTimer;
 
 function App() {
-   const authState = useSelector((state) => {
-      console.log(state);
-      return state;
-   });
-   const { token, tokenExpirationDate } = authState;
+   const token = useSelector(state => state.token);
+   const tokenExpirationDate = useSelector(state => state.tokenExpirationDate);
    
    const dispatch = useDispatch();
    const { logIn, logOut } = authActions;

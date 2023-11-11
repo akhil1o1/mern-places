@@ -33,7 +33,7 @@ const authSlice = createSlice({
             }) // date.toISOString => converts a date into string
          );
       },
-      logOut(state, action) {
+      logOut(state) {
          state.token = null;
          state.tokenExpirationDate = null;
          state.isLoggedIn = false;

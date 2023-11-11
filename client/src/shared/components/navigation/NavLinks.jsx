@@ -1,18 +1,21 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 
+import { authActions } from "../../../store/authSlice";
 import Button from "../FormElements/Button";
 import classes from "./Navlinks.module.css";
 
 function Navlinks() {
-   const { isLoggedIn, logOut, userId } = useSelector((state) => {
-      console.log(state);
-      return state;
-   });
+   const isLoggedIn = useSelector(state => state.isLoggedIn);
+   const userId = useSelector(state => state.userId);
+
+   const {logOut} = authActions;
+
+   const dispatch = useDispatch();
 
    function logOutHandler() {
-      logOut();
+      dispatch(logOut());
    }
 
    return (
