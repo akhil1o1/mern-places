@@ -9,7 +9,7 @@ import MainNavigation from "./shared/components/navigation/MainNavigation";
 import NotFound from "./shared/Pages/NotFound";
 import UpdatePlace from "./places/pages/UpdatePlace";
 import Auth from "./users/pages/Auth";
-import { authActions } from "./store/authSlice";
+import { loginUser, logOutUser } from "./store/auth-actions";
 import "./App.css";
 
 let logOutTimer;
@@ -22,35 +22,36 @@ function App() {
    console.table({ token, tokenExpirationDate });
 
    const dispatch = useDispatch();
-   const { logIn, logOut } = authActions;
 
    useEffect(() => {
-      const storedUserData = JSON.parse(localStorage.getItem("userData")); //JSON.parse => parses json string to back to a javascript object.
+      const storedUserData = JSON.parse(localStorage.getItem("userData")); //JSON.parse => parses json string back to a javascript object.
       if (
          storedUserData &&
          storedUserData.token &&
          new Date(storedUserData.expiration) > new Date() // => if expiration date timestamp is greater than current timestamp
       ) {
          dispatch(
-            logIn({
-               uid: storedUserData.userId,
+            loginUser({
+               userId: storedUserData.userId,
                token: storedUserData.token,
                expirationDate: new Date(storedUserData.expiration),
             })
          ); // logging in user automatically
       }
-   }, [logIn, dispatch]);
+   }, [dispatch]);
 
    useEffect(() => {
       if (token && tokenExpirationDate) {
          const remainingTime =
-            tokenExpirationDate.getTime() - new Date().getTime(); // remaining time for token expiration in milli seconds
+           new Date(tokenExpirationDate).getTime() - new Date().getTime(); // remaining time for token expiration in milli seconds
          console.log("remainingTime", remainingTime);
-         logOutTimer = setTimeout(() => dispatch(logOut()), remainingTime);
+         logOutTimer = setTimeout(() => dispatch(logOutUser()), remainingTime);
       } else {
-         clearTimeout(logOutTimer);
+         return () => {// cleanup function
+            clearTimeout(logOutTimer);
+         };
       }
-   }, [token, tokenExpirationDate, dispatch, logOut]);
+   }, [token, tokenExpirationDate, dispatch]);
 
    return (
       <Router>

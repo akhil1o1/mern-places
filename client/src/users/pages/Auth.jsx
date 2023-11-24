@@ -15,7 +15,7 @@ import {
 } from "../../shared/utils/validators";
 import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { authActions } from "../../store/authSlice";
+import { loginUser } from "../../store/auth-actions";
 import classes from "./Auth.module.css";
 
 function Auth() {
@@ -23,7 +23,6 @@ function Auth() {
    const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
    const dispatch = useDispatch();
-   const { logIn } = authActions;
 
    const [formState, inputHandler, setFormData] = useForm(
       {
@@ -59,7 +58,10 @@ function Auth() {
             });
 
             dispatch(
-               logIn({ uid: responseData.userId, token: responseData.token })
+               loginUser({
+                  userId: responseData.userId,
+                  token: responseData.token,
+               })
             ); // jwt token for auth
             navigate("/", { replace: true }); // redirects to homepage and erases current page from history.
          } catch (error) {} // error will be handled in useHttpClient hook
@@ -79,7 +81,10 @@ function Auth() {
             }); // fetch api will automatically add relevant headers when working with formData.
 
             dispatch(
-               logIn({ uid: responseData.userId, token: responseData.token })
+               loginUser({
+                  userId: responseData.userId,
+                  token: responseData.token,
+               })
             ); // jwt token for auth
             navigate("/", { replace: true });
          } catch (error) {} // error will be handled in useHttpClient hook
