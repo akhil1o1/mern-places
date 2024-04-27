@@ -3,7 +3,7 @@ dotenv.config();
 import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { trusted } from "mongoose";
+
 
 import HttpError from "../Models/http-error.js";
 import User from "../Models/user-model.js";
